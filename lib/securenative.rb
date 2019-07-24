@@ -1,0 +1,2 @@
+class SecureNative
+end
