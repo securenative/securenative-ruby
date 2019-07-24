@@ -1,2 +1,0 @@
-class SDK
-end
