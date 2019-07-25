@@ -29,8 +29,14 @@ class SecureNative
     nil
   end
 
+  def flow(event)  # Note: For future purposes
+    self.validate_event(event)
+    @event_manager.send_async(event, Config.flow_event)
+  end
+
   private
 
   def validate_event(event)
+    # TODO implement me
   end
 end

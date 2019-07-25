@@ -5,4 +5,5 @@ module Config
   @securenative_stg = "https://api.securenative-stg.com"
   @track_event = "collector/api/v1/track"
   @verify_event = "collector/api/v1/verify"
+  @flow_event = "collector/api/v1/flow"
 end
