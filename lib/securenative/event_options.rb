@@ -58,6 +58,17 @@ class Event
         :params => p
     }
   end
+
+  attr_reader :cid
+  attr_reader :params
+  attr_reader :user_agent
+  attr_reader :user
+  attr_reader :remote_ip
+  attr_reader :event_type
+  attr_reader :fp
+  attr_reader :ip
+  attr_reader :ts
+  attr_reader :vid
 end
 
 class CustomParam

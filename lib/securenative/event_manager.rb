@@ -1,3 +1,5 @@
+require_relative '../../lib/securenative/securenative_options'
+require_relative '../../lib/securenative/http_client'
 require 'json'
 
 class QueueItem
@@ -8,7 +10,7 @@ class QueueItem
 end
 
 class EventManager
-  def initialize(api_key, options = SecureNativeOptions(), http_client = HTTPClient())
+  def initialize(api_key, options = SecureNativeOptions.new, http_client = HttpClient.new)
     if api_key == nil
       raise ArgumentError.new('API key cannot be None, please get your API key from SecureNative console.')
     end
@@ -26,13 +28,13 @@ class EventManager
   end
 
   def send_async(event, path)
-    q_item = QueueItem(self.build_url(path), event)
+    q_item = QueueItem.new(build_url(path), event)
     @queue.push(q_item)
   end
 
   def send_sync(event, path)
     @http_client.post(
-        self.build_url(path),
+        build_url(path),
         @api_key,
         JSON.generate(event)
     )
@@ -44,7 +46,7 @@ class EventManager
 
     q.each do |item|
       @http_client.post(
-          self.build_url(item.url),
+          build_url(item.url),
           @api_key,
           item.body
       )
