@@ -3,14 +3,13 @@ require 'httpclient'
 class HttpClient
   def initialize
     @client = HTTPClient.new
-    @config = Config.new
   end
 
   def headers(api_key)
     {
         "Content-Type" => 'application/json',
         "User-Agent" => 'SecureNative-ruby',
-        "Sn-Version" => @config.sdk_version,
+        "Sn-Version" => Config::SDK_VERSION,
         "Authorization" => api_key
     }
   end
