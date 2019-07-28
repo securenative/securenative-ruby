@@ -1,37 +1,43 @@
+require_relative '../lib/securenative/event_manager'
+require_relative 'securenative/config'
 require 'json'
 
 class SecureNative
-  def initialize(api_key, options = SecureNativeOptions())
+  def initialize(api_key, options = SecureNativeOptions.new)
     if api_key == nil
       raise ArgumentError.new('API key cannot be nil, please get your API key from SecureNative console.')
     end
 
     @api_key = api_key
     @options = options
-    @event_manager = EventManager(@api_key, @options)
+    @event_manager = EventManager.new(@api_key, @options)
   end
 
   def api_key
     @api_key
   end
 
+  def version
+    Config::SDK_VERSION
+  end
+
   def track(event)
-    self.validate_event(event)
-    @event_manager.send_async(event, Config.track_event)
+    validate_event(event)
+    @event_manager.send_async(event, Config::TRACK_EVENT)
   end
 
   def verify(event) # TODO fix implementation
-    self.validate_event(event)
-    res = @event_manager.send_sync(event, Config.verify_event)
+    validate_event(event)
+    res = @event_manager.send_sync(event, Config::VERIFY_EVENT)
     if res.status_code == 200
       return JSON.parse(res.text)
     end
     nil
   end
 
-  def flow(event)  # Note: For future purposes
-    self.validate_event(event)
-    @event_manager.send_async(event, Config.flow_event)
+  def flow(event) # Note: For future purposes
+    validate_event(event)
+    @event_manager.send_async(event, Config::FLOW_EVENT)
   end
 
   private
