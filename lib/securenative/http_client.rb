@@ -1,11 +1,16 @@
-module HTTPClient
-  @client = HTTPClient.new
+require 'httpclient'
+
+class HttpClient
+  def initialize
+    @client = HTTPClient.new
+    @config = Config.new
+  end
 
   def headers(api_key)
     {
         "Content-Type" => 'application/json',
-        "User-Agent" => 'SecureNative-python',
-        "Sn-Version" => Config.sdk_version,
+        "User-Agent" => 'SecureNative-ruby',
+        "Sn-Version" => @config.sdk_version,
         "Authorization" => api_key
     }
   end
