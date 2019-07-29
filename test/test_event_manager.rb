@@ -29,8 +29,10 @@ describe EventManager do
     user_id = SecureRandom.uuid
     url = "https://postman-echo.com/post"
     event = event_builder.build(EventType::LOG_IN, user_id)
+    item = event_manager.send_async(event, url)
+    event_manager.flush
 
-    expect(event_manager.send_async(event, url)).to be_instance_of(Thread::Queue)
+    expect(item).to be_instance_of(Thread::Queue)
   end
 
   it "post an asynced request" do

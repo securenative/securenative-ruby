@@ -6,6 +6,10 @@ class User
     @user_email = user_email
     @user_name = user_name
   end
+
+  attr_reader :user_id
+  attr_reader :user_email
+  attr_reader :user_name
 end
 
 class Event
@@ -76,4 +80,7 @@ class CustomParam
     @key = key
     @value = value
   end
+
+  attr_reader :key
+  attr_reader :value
 end
