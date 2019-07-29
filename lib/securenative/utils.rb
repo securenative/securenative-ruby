@@ -13,8 +13,6 @@ module Utils
     end
   end
 
-  private
-
   def parse_cookie(cookie = nil)
     fp = ""
     cid = ""
