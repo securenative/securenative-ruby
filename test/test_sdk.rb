@@ -8,8 +8,8 @@ require 'json'
 
 describe SecureNative do
   let(:sn_options) {SecureNativeOptions.new}
-  let(:sn_client) {SecureNative.new("5B0A332762FD61C3B74818C9580F6F31ECE1803F", sn_options)}
-  let(:event_builder) {EventBuilder.new}
+  let(:sn_client) {SecureNative.new(ENV["SN_API_KEY"], sn_options)}
+  let(:event_builder) {EventBuilder.new}  #  TODO fix implementation
 
   it "use sdk without api key" do
     api_key = nil
