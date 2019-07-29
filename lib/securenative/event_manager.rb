@@ -7,6 +7,9 @@ class QueueItem
     @url = url
     @body = body
   end
+
+  attr_reader :url
+  attr_reader :body
 end
 
 class EventManager
