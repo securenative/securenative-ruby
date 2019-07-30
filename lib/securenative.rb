@@ -1,11 +1,12 @@
 require_relative '../lib/securenative/event_manager'
 require_relative 'securenative/config'
+require_relative 'securenative/sn_exception'
 require 'json'
 
 class SecureNative
   def initialize(api_key, options = SecureNativeOptions.new)
     if api_key == nil
-      raise ArgumentError.new('API key cannot be nil, please get your API key from SecureNative console.')
+      raise SecureNativeSDKException.new
     end
 
     @api_key = api_key

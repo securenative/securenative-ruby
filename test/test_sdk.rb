@@ -13,7 +13,7 @@ describe SecureNative do
 
   it "use sdk without api key" do
     api_key = nil
-    expect {SecureNative.new(api_key, sn_options)}.to raise_error(ArgumentError)
+    expect {SecureNative.new(api_key, sn_options)}.to raise_error(SecureNativeSDKException)
   end
 
   it "track an event" do

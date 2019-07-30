@@ -1,5 +1,6 @@
 require_relative '../../lib/securenative/securenative_options'
 require_relative '../../lib/securenative/http_client'
+require_relative '../../lib/securenative/sn_exception'
 require 'json'
 
 class QueueItem
@@ -15,7 +16,7 @@ end
 class EventManager
   def initialize(api_key, options = SecureNativeOptions.new, http_client = HttpClient.new)
     if api_key == nil
-      raise ArgumentError.new('API key cannot be None, please get your API key from SecureNative console.')
+      raise SecureNativeSDKException.new
     end
 
     @api_key = api_key
