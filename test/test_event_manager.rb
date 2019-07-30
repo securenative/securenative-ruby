@@ -1,7 +1,7 @@
 require_relative '../lib/securenative/event_manager'
 require_relative '../lib/securenative/securenative_options'
-require_relative '../lib/securenative/event_builder'
 require_relative '../lib/securenative/event_type'
+require_relative '../lib/securenative/event_options'
 require 'rspec/autorun'
 require 'securerandom'
 
@@ -20,25 +20,31 @@ class MockHttpClient
   end
 end
 
+def build_event(type = EventType::LOG_IN, id)
+  Event.new(event_type = type,
+            user: User.new(user_id: id, user_email: 'support@securenative.com', user_name: 'support'),
+            params: [CustomParam.new('key', 'val')]
+  )
+end
+
 describe EventManager do
   let(:api_key) {ENV["SN_API_KEY"]}
-  let(:event_manager) {EventManager.new(api_key, SecureNativeOptions.new, MockHttpClient.new)}
-  let(:event_builder) {EventBuilder.new} #  TODO fix implementation
+  let(:event_manager) {EventManager.new(api_key, options: SecureNativeOptions.new, http_client: MockHttpClient.new)}
 
   it "post a synced request" do
     user_id = SecureRandom.uuid
     url = "https://postman-echo.com/post"
-    event = event_builder.build(EventType::LOG_IN, user_id)
+    event = build_event(EventType::LOG_IN, user_id)
     item = event_manager.send_async(event, url)
     event_manager.flush
 
     expect(item).to be_instance_of(Thread::Queue)
   end
 
-  it "post an asynced request" do
+  it "post an a-synced request" do
     user_id = SecureRandom.uuid
     url = "https://postman-echo.com/post"
-    event = event_builder.build(EventType::LOG_IN, user_id)
+    event = build_event(EventType::LOG_IN, user_id)
 
     res = event_manager.send_sync(event, url)
     expect(res).not_to be_empty

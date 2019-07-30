@@ -2,6 +2,7 @@ require_relative '../../lib/securenative/securenative_options'
 require_relative '../../lib/securenative/http_client'
 require_relative '../../lib/securenative/sn_exception'
 require 'json'
+require 'thread'
 
 class QueueItem
   def initialize(url, body)
@@ -14,7 +15,7 @@ class QueueItem
 end
 
 class EventManager
-  def initialize(api_key, options = SecureNativeOptions.new, http_client = HttpClient.new)
+  def initialize(api_key, options: SecureNativeOptions.new, http_client: HttpClient.new)
     if api_key == nil
       raise SecureNativeSDKException.new
     end
@@ -25,8 +26,12 @@ class EventManager
     @queue = Queue.new
 
     if @options.auto_send
+      interval_seconds = [(@options.interval / 1000).floor, 1].max
       Thread.new do
-      #  TODO implement me
+        loop do
+          flush
+          sleep(interval_seconds)
+        end
       end
     end
   end
@@ -40,27 +45,44 @@ class EventManager
     @http_client.post(
         build_url(path),
         @api_key,
-        JSON.generate(event)
+        event.to_hash.to_json
     )
   end
 
   def flush
-    q = Array.new(@queue.size) {@queue.pop}
-    @queue = Queue.new
-
-    q.each do |item|
-      @http_client.post(
-          build_url(item.url),
-          @api_key,
-          item.body
-      )
+    if is_queue_full
+      i = @options.max_events - 1
+      while i >= 0
+        item = @queue.pop
+        @http_client.post(
+            build_url(item.url),
+            @api_key,
+            item.body.to_hash.to_json
+        )
+      end
+    else
+      q = Array.new(@queue.size) {@queue.pop}
+      q.each do |item|
+        @http_client.post(
+            build_url(item.url),
+            @api_key,
+            item.body
+        )
+        @queue = Queue.new
+      end
     end
   end
 
   private
 
   def build_url(path)
-    @options.api_url + "/" + path
+    @options.api_url + path
+  end
+
+  private
+
+  def is_queue_full
+    @queue.length > @options.max_events
   end
 
 end

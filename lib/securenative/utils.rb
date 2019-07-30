@@ -1,8 +1,9 @@
 require "base64"
 require "json"
+require 'openssl'
 
 module Utils
-  def verify_signature(secret, text_body, header_signature)
+  def self.verify_signature(secret, text_body, header_signature)
     begin
       key = secret.encode('utf-8')
       body = text_body.encode('utf-8')
@@ -13,7 +14,7 @@ module Utils
     end
   end
 
-  def parse_cookie(cookie = nil)
+  def self.parse_cookie(cookie = nil)
     fp = ""
     cid = ""
     unless cookie
@@ -34,7 +35,7 @@ module Utils
       end
     rescue Exception
     ensure
-    return fp, cid
+      return fp, cid
     end
   end
 end

@@ -1,7 +1,7 @@
 require 'securerandom'
 
 class User
-  def initialize(user_id = "", user_email = "", user_name = "")
+  def initialize(user_id: "", user_email: "", user_name: "")
     @user_id = user_id
     @user_email = user_email
     @user_name = user_name
@@ -13,7 +13,7 @@ class User
 end
 
 class Event
-  def initialize(event_type, user = User(), ip = "127.0.0.1", remote_ip = "127.0.0.1", user_agent = "unknown", sn_cookie = nil, params = nil)
+  def initialize(event_type, user: User(), ip: "127.0.0.1", remote_ip: "127.0.0.1", user_agent: "unknown", sn_cookie: nil, params: nil)
     @event_type = event_type
     @user = user
     @ip = ip
