@@ -1,3 +1,8 @@
+PATH
+  remote: .
+  specs:
+    securenative (0.1.5)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -22,9 +27,11 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  bundler (~> 2.0)
   httpclient
   rake
   rspec
+  securenative!
 
 BUNDLED WITH
-   1.17.3
+   2.1.0.pre.1

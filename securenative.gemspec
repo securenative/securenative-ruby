@@ -4,7 +4,7 @@ require "securenative/config"
 
 Gem::Specification.new do |spec|
   spec.name          = "securenative"
-  spec.version       = Config::VERSION
+  spec.version       = Config::SDK_VERSION
   spec.authors       = ["SecureNative"]
   spec.email         = ["support@securenative.com"]
 
