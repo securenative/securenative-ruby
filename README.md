@@ -27,7 +27,7 @@ require 'securenative'
 # ...
  
 begin
-  sn = SecureNative.new('YOUR_API_KEY') # Should be called before any other call to secure native
+  sn = SecureNative.new('YOUR_API_KEY') # Should be called before any other call to securenative
 rescue SecureNativeSDKException => e
   # Do some error handling
 end
@@ -75,7 +75,7 @@ You can use the SDK to verify incoming webhooks from SecureNative, just call the
 require 'securenative'
 
 begin
-  sn = SecureNative.new('YOUR_API_KEY') # Should be called before any other call to secure native
+  sn = SecureNative.new('YOUR_API_KEY') # Should be called before any other call to securenative
 rescue SecureNativeSDKException => e
   # Do some error handling
 end
