@@ -1,6 +1,6 @@
-require_relative '../../lib/securenative/securenative_options'
-require_relative '../../lib/securenative/http_client'
-require_relative '../../lib/securenative/sn_exception'
+require_relative 'securenative_options'
+require_relative 'http_client'
+require_relative 'sn_exception'
 require 'json'
 require 'thread'
 

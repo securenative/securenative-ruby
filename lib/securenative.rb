@@ -1,7 +1,7 @@
-require_relative '../lib/securenative/event_manager'
+require_relative 'securenative/event_manager'
 require_relative 'securenative/config'
 require_relative 'securenative/sn_exception'
-require_relative '../lib/securenative/utils'
+require_relative 'securenative/utils'
 require 'json'
 
 class SecureNative
