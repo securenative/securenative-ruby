@@ -62,18 +62,20 @@ require 'securenative'
 require 'securenative/event_type'
 
 
-def reset_password
-  # Do some cool stuff here
-  # ...
-  # ...
-  
-  SecureNative.verify(Event.new(
-            event_type = EventTypes::PASSWORD_RESET,
-            user: User.new("1", "Jon Snow", "jon@snow.com"),
-            ip: "1.2.3.4",
-            remote_ip: "5.6.7.8",
-            user_agent: "Mozilla/5.0 (Linux; U; Android 4.4.2; zh-cn; GT-I9500 Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko)Version/4.0 MQQBrowser/5.0 QQ-URL-Manager Mobile Safari/537.36",
-            sn_cookie: "cookie"))
+def reset_password   
+    res = SecureNative.verify(Event.new(
+              event_type = EventTypes::PASSWORD_RESET,
+              user: User.new("1", "Jon Snow", "jon@snow.com"),
+              ip: "1.2.3.4",
+              remote_ip: "5.6.7.8",
+              user_agent: "Mozilla/5.0 (Linux; U; Android 4.4.2; zh-cn; GT-I9500 Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko)Version/4.0 MQQBrowser/5.0 QQ-URL-Manager Mobile Safari/537.36",
+              sn_cookie: "cookie"))
+                  
+    if res['riskLevel'] == 'high'
+        return 'Cannot change password'
+    else res['riskLevel'] == 'medium'
+        return 'MFA'
+     end   
 end
 ```
 
