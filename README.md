@@ -27,7 +27,7 @@ require 'securenative'
 # ...
  
 begin
-  sn = SecureNative.new('YOUR_API_KEY') # Should be called before any other call to securenative
+  SecureNative.init('YOUR_API_KEY') # Should be called before any other call to securenative
 rescue SecureNativeSDKException => e
   # Do some error handling
 end
@@ -36,12 +36,16 @@ end
 ## Tracking events
 Once the SDK has been initialized, you can start sending new events with the `track` function:
 ```ruby
+require 'securenative'
+require 'securenative/event_type'
+
+
 def login
   # Do some cool stuff here
   # ...
   # ...
   
-  sn.track(Event.new(
+  SecureNative.track(Event.new(
             event_type = EventTypes::LOG_IN,
             user: User.new("1", "Jon Snow", "jon@snow.com"),
             ip: "1.2.3.4",
@@ -54,12 +58,16 @@ end
 ## Verification events
 Once the SDK has been initialized, you can start sending new events with the `verify` function:
 ```ruby
+require 'securenative'
+require 'securenative/event_type'
+
+
 def reset_password
   # Do some cool stuff here
   # ...
   # ...
   
-  sn.verify(Event.new(
+  SecureNative.verify(Event.new(
             event_type = EventTypes::PASSWORD_RESET,
             user: User.new("1", "Jon Snow", "jon@snow.com"),
             ip: "1.2.3.4",
@@ -75,14 +83,14 @@ You can use the SDK to verify incoming webhooks from SecureNative, just call the
 require 'securenative'
 
 begin
-  sn = SecureNative.new('YOUR_API_KEY') # Should be called before any other call to securenative
+  SecureNative.init('YOUR_API_KEY') # Should be called before any other call to securenative
 rescue SecureNativeSDKException => e
   # Do some error handling
 end
 
 def handle_some_code(headers, body)
   sig_header = headers["X-SecureNative"]
-  if sn.verify_webhook(sig_header, body)
+  if SecureNative.verify_webhook(sig_header, body)
       # Handle the webhook
       level = body['riskLevel']
   else
