@@ -1,62 +1,39 @@
-require_relative 'securenative/event_manager'
-require_relative 'securenative/config'
 require_relative 'securenative/sn_exception'
-require_relative 'securenative/utils'
-require 'json'
+require_relative 'securenative/secure_native_sdk'
 
-class SecureNative
-  def initialize(api_key, options: SecureNativeOptions.new)
-    if api_key == nil
+$securenative = nil
+
+module SecureNative
+  def self.init(api_key, options: SecureNativeOptions.new)
+    if $securenative == nil
+      $securenative = SecureNativeSDK.new(api_key, options: options)
+    end
+  end
+
+  def self.track(event)
+    sdk = _get_or_throw
+    sdk.track(event)
+  end
+
+  def self.verify(event)
+    sdk = _get_or_throw
+    sdk.verify(event)
+  end
+
+  def self.verify_webhook(hmac_header, body)
+    sdk = _get_or_throw
+    sdk.verify_webhook(hmac_header = hmac_header, body = body)
+  end
+
+  def self.flush
+    sdk = _get_or_throw
+    sdk.flush
+  end
+
+  def self._get_or_throw
+    if $securenative == nil
       raise SecureNativeSDKException.new
     end
-
-    @api_key = api_key
-    @options = options
-    @event_manager = EventManager.new(@api_key, options: @options)
-  end
-
-  def api_key
-    @api_key
-  end
-
-  def version
-    Config::SDK_VERSION
-  end
-
-  def track(event)
-    validate_event(event)
-    @event_manager.send_async(event, Config::TRACK_EVENT)
-  end
-
-  def verify(event)
-    validate_event(event)
-    res = @event_manager.send_sync(event, Config::VERIFY_EVENT)
-    if res.status_code == 200
-      return JSON.parse(res.body)
-    end
-    nil
-  end
-
-  def flow(event) # Note: For future purposes
-    validate_event(event)
-    @event_manager.send_async(event, Config::FLOW_EVENT)
-  end
-
-  def verify_webhook(hmac_header, body)
-    Utils.verify_signature(@api_key, body, hmac_header)
-  end
-
-  def flush
-    @event_manager.flush
-  end
-
-  private
-
-  def validate_event(event)
-    unless event.params.nil?
-      if event.params.length > Config::MAX_ALLOWED_PARAMS
-        event.params = event.params[0, Config::MAX_ALLOWED_PARAMS]
-      end
-    end
+    $securenative
   end
 end

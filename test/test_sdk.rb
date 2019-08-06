@@ -13,26 +13,27 @@ def build_event(type = EventType::LOG_IN, id)
   )
 end
 
-describe SecureNative do
+describe SecureNativeSDK do
   let(:sn_options) {SecureNativeOptions.new}
-  let(:sn_client) {SecureNative.new(ENV["SN_API_KEY"], options: sn_options)}
 
   it "use sdk without api key" do
     api_key = nil
-    expect {SecureNative.new(api_key, options: sn_options)}.to raise_error(SecureNativeSDKException)
+    expect {SecureNative.init(api_key, options: sn_options)}.to raise_error(SecureNativeSDKException)
   end
 
   it "track an event" do
     user_id = SecureRandom.uuid
     event = build_event(EventType::LOG_IN, user_id)
-    sn_client.track(event)
-    expect(sn_client.flush).not_to be_empty
+    SecureNative.init(ENV["SN_API_KEY"], options: sn_options)
+    SecureNative.track(event)
+    expect(SecureNative.flush).not_to be_empty
   end
 
   it "verify an event" do
     user_id = SecureRandom.uuid
     event = build_event(EventType::LOG_OUT, user_id)
-    res = sn_client.verify(event)
+    SecureNative.init(ENV["SN_API_KEY"], options: sn_options)
+    res = SecureNative.verify(event)
 
     expect(res).not_to be_empty
     expect(res['triggers']).not_to be_empty
