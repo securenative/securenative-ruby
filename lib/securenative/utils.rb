@@ -1,3 +1,5 @@
+require_relative 'config'
+require "logger"
 require "base64"
 require "json"
 require 'openssl'
@@ -38,4 +40,28 @@ module Utils
       return fp, cid
     end
   end
+
+  def self.decrypt(encrypted, cipher_key)
+    logger = Logger.new(STDOUT)
+    logger.level = Logger::WARN
+
+    decipher = OpenSSL::Cipher::AES.new(Config::CIPHER_SIZE, :CBC).decrypt
+    decipher.padding = 0
+
+    begin
+      cipher_key = cipher_key.each_byte.map { |b| b.to_s(16) }.join
+      encrypted = encrypted.each_byte.map { |b| b.to_s(16) }.join
+
+      decipher.key = cipher_key.slice(0, Config::AES_KEY_SIZE)
+      decipher.iv = encrypted.slice(0, Config::AES_BLOCK_SIZE)
+
+      decrypted = decipher.update(encrypted) + decipher.final
+      decrypted = decrypted.each_byte.map { |b| b.to_s(16) }.join
+      return decrypted
+    rescue => err
+      logger.fatal("Could not decrypt encrypted data: " + err.message)
+      return nil
+    end
+  end
+
 end
