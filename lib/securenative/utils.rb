@@ -4,6 +4,10 @@ require "base64"
 require "json"
 require 'openssl'
 
+logger = Logger.new(STDOUT)
+logger.level = Logger::WARN
+
+
 module Utils
   def self.verify_signature(secret, text_body, header_signature)
     begin
@@ -42,9 +46,6 @@ module Utils
   end
 
   def self.decrypt(encrypted, cipher_key)
-    logger = Logger.new(STDOUT)
-    logger.level = Logger::WARN
-
     decipher = OpenSSL::Cipher::AES.new(Config::CIPHER_SIZE, :CBC).decrypt
     decipher.padding = 0
 
