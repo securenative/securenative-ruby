@@ -4,9 +4,6 @@ require "base64"
 require "json"
 require 'openssl'
 
-logger = Logger.new(STDOUT)
-logger.level = Logger::WARN
-
 
 module Utils
   def self.verify_signature(secret, text_body, header_signature)
@@ -45,24 +42,33 @@ module Utils
     end
   end
 
-  def self.decrypt(encrypted, cipher_key)
-    decipher = OpenSSL::Cipher::AES.new(Config::CIPHER_SIZE, :CBC).decrypt
-    decipher.padding = 0
+  def self.encrypt(plain_text, key)
+    cipher = OpenSSL::Cipher::AES.new(Config::CIPHER_SIZE, :CBC).encrypt
+    cipher.padding = 0
 
-    begin
-      cipher_key = cipher_key.each_byte.map { |b| b.to_s(16) }.join
-      encrypted = encrypted.each_byte.map { |b| b.to_s(16) }.join
-
-      decipher.key = cipher_key.slice(0, Config::AES_KEY_SIZE)
-      decipher.iv = encrypted.slice(0, Config::AES_BLOCK_SIZE)
-
-      decrypted = decipher.update(encrypted) + decipher.final
-      decrypted = decrypted.each_byte.map { |b| b.to_s(16) }.join
-      return decrypted
-    rescue => err
-      logger.fatal("Could not decrypt encrypted data: " + err.message)
+    if plain_text.size % Config::AES_BLOCK_SIZE != 0
+      logger = Logger.new(STDOUT)
+      logger.level = Logger::WARN
+      logger.fatal("data not multiple of block length")
       return nil
     end
+
+    key = Digest::SHA1.hexdigest key
+    cipher.key = key.slice(0, Config::AES_BLOCK_SIZE)
+    s = cipher.update(plain_text) + cipher.final
+
+    s.unpack('H*')[0].upcase
   end
 
+  def self.decrypt(encrypted, key)
+    cipher = OpenSSL::Cipher::AES.new(Config::CIPHER_SIZE, :CBC).decrypt
+    cipher.padding = 0
+
+    key = Digest::SHA1.hexdigest key
+    cipher.key = key.slice(0, Config::AES_BLOCK_SIZE)
+    s = [encrypted].pack("H*").unpack("C*").pack("c*")
+
+    rv = cipher.update(s) + cipher.final
+    return rv.strip
+  end
 end

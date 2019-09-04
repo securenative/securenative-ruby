@@ -7,6 +7,5 @@ module Config
     VERIFY_EVENT = "/verify"
     FLOW_EVENT = "/flow"
     CIPHER_SIZE = 256
-    AES_BLOCK_SIZE = 16
-    AES_KEY_SIZE = 32
+    AES_BLOCK_SIZE = 32
 end
