@@ -22,9 +22,11 @@ class Event
     @cid = ""
     @fp = ""
 
-    if params
-      unless params.length > 0 && params[0].instance_of?(CustomParam)
-        raise ArgumentError("custom params should be a list of CustomParams")
+    if params != nil
+      if params.instance_of?(CustomParam)
+        raise ArgumentError.new("custom params should be a list of CustomParams")
+      else
+        @params = params
       end
     end
     @params = params
