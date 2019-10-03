@@ -15,25 +15,31 @@ end
 
 describe SecureNativeSDK do
   let(:sn_options) {SecureNativeOptions.new}
+  let(:sn) {nil}
 
   it "use sdk without api key" do
     api_key = nil
     expect {SecureNative.init(api_key, options: sn_options)}.to raise_error(SecureNativeSDKException)
   end
 
+  it "check for singleton use" do
+    sn = SecureNative.init(ENV["SN_API_KEY"], options: sn_options)
+    expect {sn.init(ENV["SN_API_KEY"], options: sn_options)}.to raise_error(StandardError)
+  end
+
   it "track an event" do
+    sn = SecureNative._get_or_throw
     user_id = SecureRandom.uuid
     event = build_event(EventType::LOG_IN, user_id)
-    SecureNative.init(ENV["SN_API_KEY"], options: sn_options)
-    SecureNative.track(event)
-    expect(SecureNative.flush).not_to be_empty
+    sn.track(event)
+    expect(sn.flush).not_to be_empty
   end
 
   it "verify an event" do
+    sn = SecureNative._get_or_throw
     user_id = SecureRandom.uuid
     event = build_event(EventType::LOG_OUT, user_id)
-    SecureNative.init(ENV["SN_API_KEY"], options: sn_options)
-    res = SecureNative.verify(event)
+    res = sn.verify(event)
 
     expect(res).not_to be_empty
     expect(res['triggers']).not_to be_empty
