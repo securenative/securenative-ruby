@@ -43,7 +43,30 @@ class ContextBuilder
   end
 
   def self.from_http_request(request)
-    #  TODO implement me
+    begin
+      client_token = request.cookies[RequestUtils.SECURENATIVE_COOKIE]
+    rescue StandardError
+      client_token = nil
+    end
+
+    begin
+      headers = request.headers
+    rescue StandardError
+      headers = nil
+    end
+
+    if Utils.is_null_or_empty(client_token)
+      client_token = RequestUtils.get_secure_header_from_request(headers)
+    end
+
+    return ContextBuilder()
+               .with_url(request.url)
+               .with_method(request.method)
+               .with_headers(headers)
+               .with_client_token(client_token)
+               .with_ip(RequestUtils.get_client_ip_from_request(request))
+               .with_remote_ip(RequestUtils.get_remote_ip_from_request(request))
+               .with_body(nil)
   end
 
   def build
