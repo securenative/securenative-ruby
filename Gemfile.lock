@@ -1,13 +1,14 @@
 PATH
   remote: .
   specs:
-    securenative (0.1.5)
+    securenative (0.1.16)
 
 GEM
   remote: https://rubygems.org/
   specs:
     diff-lcs (1.3)
     httpclient (2.8.3)
+    parseconfig (1.0.8)
     rake (12.3.3)
     rspec (3.8.0)
       rspec-core (~> 3.8.0)
@@ -29,6 +30,7 @@ PLATFORMS
 DEPENDENCIES
   bundler (~> 2.0)
   httpclient
+  parseconfig
   rake
   rspec
   securenative!
