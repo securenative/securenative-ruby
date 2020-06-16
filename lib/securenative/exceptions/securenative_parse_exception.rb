@@ -1,0 +1,2 @@
+class SecureNativeParseException < StandardError
+end

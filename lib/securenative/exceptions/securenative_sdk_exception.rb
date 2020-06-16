@@ -1,0 +1,2 @@
+class SecureNativeSDKException < StandardError
+end
