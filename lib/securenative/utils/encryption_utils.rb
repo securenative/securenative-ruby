@@ -1,4 +1,4 @@
-require "openssl"
+require 'openssl'
 
 class EncryptionUtils
   BLOCK_SIZE = 16

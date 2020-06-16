@@ -7,7 +7,7 @@ class ConfigurationBuilder
     @timeout = 1500
     @auto_send = true
     @disable = false
-    @log_level = "CRITICAL"  # TODO implement ruby logger
+    @log_level = "FATAL"
     @fail_over_strategy = FailOverStrategy::FAIL_OPEN
   end
 

@@ -1,4 +1,4 @@
-require "parseconfig"
+require 'parseconfig'
 
 class ConfigurationManager
   DEFAULT_CONFIG_FILE = "securenative.cfg"

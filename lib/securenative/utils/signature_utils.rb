@@ -1,4 +1,4 @@
-require "openssl"
+require 'openssl'
 
 class SignatureUtils
   def self.is_valid_signature(api_key, payload, header_signature)

@@ -1,4 +1,4 @@
-class SdkEvent
+class SDKEvent
   attr_reader :context, :rid, :event_type, :user_id, :user_traits, :request, :timestamp, :properties
   attr_writer :context, :rid, :event_type, :user_id, :user_traits, :request, :timestamp, :properties
 

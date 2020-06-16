@@ -1,4 +1,4 @@
-require "httpclient"
+require 'httpclient'
 
 class SecureNativeHttpClient
   AUTHORIZATION_HEADER = "Authorization"
