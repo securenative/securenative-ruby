@@ -1,0 +1,3 @@
+describe ConfigurationManager do
+
+end

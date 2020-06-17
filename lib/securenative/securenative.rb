@@ -80,4 +80,9 @@ class SecureNative
   def self._flush
     @securenative = nil
   end
+
+  # TODO!
+  def verify_request_payload(request)
+    # code here
+  end
 end

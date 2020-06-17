@@ -1,0 +1,3 @@
+describe ApiManager do
+
+end
