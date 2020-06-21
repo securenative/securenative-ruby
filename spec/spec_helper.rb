@@ -1,5 +1,5 @@
 require "bundler/setup"
-require "securenative/lib/securenative/securenative"
+require "securenative"
 
 require 'simplecov'
 SimpleCov.start
