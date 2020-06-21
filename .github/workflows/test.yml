@@ -20,7 +20,7 @@ jobs:
           gem install bundler
           bundler install
       - name: Run tests
-        run: bundler exec rake
+        run: bundler exec rspec -t :repository-token
 
       - name: Notify slack success
         if: success()
