@@ -91,12 +91,12 @@ class EventManager
             back_off = @coefficients[@attempt] * @options.interval
             Logger.debug('Automatic back-off of {}'.format(back_off))
             @send_enabled = false
-            time.sleep(back_off) # TODO: add time sleep
+            sleep back_off
             @send_enabled = true
           end
         end
       end
-      time.sleep(@interval / 1000) # TODO: add time sleep
+      sleep @interval / 1000
     end
   end
 

@@ -9,7 +9,7 @@ describe EncryptionUtils do
   it 'decrypts' do
     result = EncryptionUtils.encrypt(:PAYLOAD, :SECRET_KEY)
 
-    expect(result).not_to be_empty
+    expect(result).not_to be_nil
     expect(result.length).to eq(:PAYLOAD.length)
   end
 
