@@ -22,9 +22,9 @@ jobs:
       - name: Run tests
         run: bundler exec rspec
       - name: Upload coverage to Codecov
-          uses: codecov/codecov-action@v1
-          with:
-            token: ${{ secrets.CODECOV_TOKEN }}
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Notify slack success
         if: success()
