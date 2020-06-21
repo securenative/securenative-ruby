@@ -1,5 +1,5 @@
 module RiskLevel
-  LOW = "low"
-  MEDIUM = "medium"
-  HIGH = "high"
+  LOW = 'low'.freeze
+  MEDIUM = 'medium'.freeze
+  HIGH = 'high'.freeze
 end

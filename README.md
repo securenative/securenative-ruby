@@ -81,7 +81,7 @@ Once initialized, sdk will create a singleton instance which you can get:
 require 'securenative'
 
 
-secureNative = SecureNative.get_instance
+secureNative = SecureNative.instance
 ```
 
 ## Tracking events
@@ -96,7 +96,7 @@ require 'securenative/event_options_builder'
 require 'securenative/models/user_traits'
 
 
-securenative = SecureNative.get_instance
+securenative = SecureNative.instance
 
 context = SecureNative.context_builder
         .with_ip("127.0.0.1")
@@ -124,7 +124,7 @@ require 'securenative/models/user_traits'
 
 
 def track(request)
-    securenative = SecureNative.get_instance
+    securenative = SecureNative.instance
     context = SecureNative.context_builder.from_http_request(request).build
 
     event_options = EventOptionsBuilder(EventTypes::LOG_IN)
@@ -150,7 +150,7 @@ require 'securenative/models/user_traits'
 
 
 def track(request)
-    securenative = SecureNative.get_instance
+    securenative = SecureNative.instance
     context = SecureNative.context_builder.from_http_request(request).build
 
     event_options = EventOptionsBuilder(EventTypes::LOG_IN)
@@ -176,7 +176,7 @@ require 'securenative'
 
 
 def webhook_endpoint(request)
-    securenative = SecureNative.get_instance
+    securenative = SecureNative.instance
     
     # Checks if request is verified
     is_verified = securenative.verify_request_payload(request)

@@ -1,4 +1,4 @@
 module ApiRoute
-  TRACK = "track"
-  VERIFY = "verify"
+  TRACK = 'track'.freeze
+  VERIFY = 'verify'.freeze
 end

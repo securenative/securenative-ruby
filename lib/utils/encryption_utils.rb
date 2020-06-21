@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'openssl'
 
 class EncryptionUtils
@@ -11,7 +13,7 @@ class EncryptionUtils
     if text.size % BLOCK_SIZE != 0
       logger = Logger.new(STDOUT)
       logger.level = Logger::WARN
-      logger.fatal("data not multiple of block length")
+      logger.fatal('data not multiple of block length')
       return nil
     end
 
@@ -28,9 +30,9 @@ class EncryptionUtils
 
     cipher_key = Digest::SHA1.hexdigest cipher_key
     cipher.key = cipher_key.slice(0, BLOCK_SIZE)
-    s = [encrypted].pack("H*").unpack("C*").pack("c*")
+    s = [encrypted].pack('H*').unpack('C*').pack('c*')
 
     rv = cipher.update(s) + cipher.final
-    return rv.strip
+    rv.strip
   end
 end

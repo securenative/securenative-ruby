@@ -1,11 +1,9 @@
 class Utils
-  def self.is_null_or_empty(string)
-    if !string.nil? && !string.empty?
-      return true
-    end
-    unless string.nil?
-      return true
-    end
-    return false
+  def self.null_or_empty?(string)
+    return true if !string.nil? && !string.empty?
+
+    return true unless string.nil?
+
+    false
   end
 end

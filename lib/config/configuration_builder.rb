@@ -1,18 +1,18 @@
 class ConfigurationBuilder
   def initialize
     @api_key = nil
-    @api_url = "https://api.securenative.com/collector/api/v1"
+    @api_url = 'https://api.securenative.com/collector/api/v1'
     @interval = 1000
     @max_events = 1000
     @timeout = 1500
     @auto_send = true
     @disable = false
-    @log_level = "FATAL"
+    @log_level = 'FATAL'
     @fail_over_strategy = FailOverStrategy::FAIL_OPEN
   end
 
   def self.default_config_builder
-    return ConfigurationBuilder()
+    ConfigurationBuilder()
   end
 
   def with_api_key(api_key)
@@ -58,14 +58,12 @@ class ConfigurationBuilder
   def with_fail_over_strategy(fail_over_strategy)
     if fail_over_strategy != FailOverStrategy::FAIL_OPEN && fail_over_strategy != FailOverStrategy::FAIL_CLOSED
       @fail_over_strategy = FailOverStrategy::FAIL_OPEN
-      self
     else
       @fail_over_strategy = fail_over_strategy
-      self
     end
   end
 
   def self.default_securenative_options
-    return SecureNativeOptions()
+    SecureNativeOptions()
   end
 end

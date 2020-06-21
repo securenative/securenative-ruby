@@ -4,20 +4,20 @@ class Logger
   @logger = Logger.new(STDOUT)
 
   def self.init_logger(level)
-    case level
-    when "WARN"
-      @logger.level = Logger::WARN
-    when "DEBUG"
-      @logger.level = Logger::DEBUG
-    when "ERROR"
-      @logger.level = Logger::ERROR
-    when "FATAL"
-      @logger.level = Logger::FATAL
-    when "INFO"
-      @logger.level = Logger::INFO
-    else
-      @logger.level = Logger::FATAL
-    end
+    @logger.level = case level
+                    when 'WARN'
+                      Logger::WARN
+                    when 'DEBUG'
+                      Logger::DEBUG
+                    when 'ERROR'
+                      Logger::ERROR
+                    when 'FATAL'
+                      Logger::FATAL
+                    when 'INFO'
+                      Logger::INFO
+                    else
+                      Logger::FATAL
+                    end
 
     @logger.formatter = proc do |severity, datetime, progname, msg|
       "[#{datetime}] #{severity}  (#{progname}): #{msg}\n"

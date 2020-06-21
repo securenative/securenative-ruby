@@ -37,8 +37,9 @@ class EventOptionsBuilder
 
   def build
     if !@event_options.properties.nil? && @event_options.properties.length > MAX_PROPERTIES_SIZE
-      raise SecureNativeInvalidOptionsException("You can have only up to {} custom properties", MAX_PROPERTIES_SIZE)
+      raise SecureNativeInvalidOptionsException('You can have only up to {} custom properties', MAX_PROPERTIES_SIZE)
     end
+
     @event_options
   end
 end

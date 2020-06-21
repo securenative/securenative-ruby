@@ -1,10 +1,10 @@
 class VersionUtils
-  def self.get_version
-    path = "VERSION"
+  def self.version
+    path = 'VERSION'
     file = File.open(path)
     version = file.read
     file.close
 
-    return version
+    version
   end
 end

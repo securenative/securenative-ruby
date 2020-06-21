@@ -72,4 +72,4 @@ class RequestContextBuilder
   def build
     RequestContext(@cid, @vid, @fp, @ip, @remote_ip, @headers, @url, @method)
   end
-end 
+end

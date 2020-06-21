@@ -39,7 +39,7 @@ class ContextBuilder
   end
 
   def self.default_context_builder
-    return ContextBuilder()
+    ContextBuilder()
   end
 
   def self.from_http_request(request)
@@ -55,18 +55,16 @@ class ContextBuilder
       headers = nil
     end
 
-    if Utils.is_null_or_empty(client_token)
-      client_token = RequestUtils.get_secure_header_from_request(headers)
-    end
+    client_token = RequestUtils.get_secure_header_from_request(headers) if Utils.null_or_empty?(client_token)
 
-    return ContextBuilder()
-               .with_url(request.url)
-               .with_method(request.method)
-               .with_headers(headers)
-               .with_client_token(client_token)
-               .with_ip(RequestUtils.get_client_ip_from_request(request))
-               .with_remote_ip(RequestUtils.get_remote_ip_from_request(request))
-               .with_body(nil)
+    ContextBuilder()
+      .with_url(request.url)
+      .with_method(request.method)
+      .with_headers(headers)
+      .with_client_token(client_token)
+      .with_ip(RequestUtils.get_client_ip_from_request(request))
+      .with_remote_ip(RequestUtils.get_remote_ip_from_request(request))
+      .with_body(nil)
   end
 
   def build

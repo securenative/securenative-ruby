@@ -17,11 +17,11 @@ class EventManager
       raise SecureNativeSDKException('API key cannot be None, please get your API key from SecureNative console.')
     end
 
-    if http_client.nil?
-      @http_client = SecureNativeHttpClient(options)
-    else
-      @http_client = http_client
-    end
+    @http_client = if http_client.nil?
+                     SecureNativeHttpClient(options)
+                   else
+                     http_client
+                   end
 
     @queue = []
     @thread = Thread.new(run)
@@ -37,16 +37,11 @@ class EventManager
 
   def send_async(event, resource_path)
     if @options.disable
-      Logger.warning("SDK is disabled. no operation will be performed")
+      Logger.warning('SDK is disabled. no operation will be performed')
       return
     end
 
-    item = QueueItem(
-        resource_path,
-        JSON.parse(EventManager.serialize(event)),
-        false
-    )
-
+    item = QueueItem(resource_path, JSON.parse(EventManager.serialize(event)), false)
     @queue.append(item)
   end
 
@@ -58,20 +53,16 @@ class EventManager
 
   def send_sync(event, resource_path, _retry)
     if @options.disable
-      Logger.warning("SDK is disabled. no operation will be performed")
+      Logger.warning('SDK is disabled. no operation will be performed')
       return
     end
 
-    Logger.debug("Attempting to send event {}".format(event))
+    Logger.debug('Attempting to send event {}'.format(event))
     res = @http_client.post(resource_path, JSON.parse(EventManager.serialize(event)))
 
     if res.status_code != 200
-      Logger.info("SecureNative failed to call endpoint {} with event {}. adding back to queue".format(resource_path, event))
-      item = QueueItem(
-          resource_path,
-          JSON.parse(EventManager.serialize(event)),
-          _retry
-      )
+      Logger.info('SecureNative failed to call endpoint {} with event {}. adding back to queue'.format(resource_path, event))
+      item = QueueItem(resource_path, JSON.parse(EventManager.serialize(event)), _retry)
       @queue.append(item)
     end
 
@@ -79,84 +70,80 @@ class EventManager
   end
 
   def run
-    while true :
-      if @queue.length > 0 and @send_enabled
-        @queue.each do |item|
-          begin
-            res = @http_client.post(item.url, item.body)
-            if res.status_code == 401
-              item.retry = false
-            elsif res.status_code != 200
-              raise SecureNativeHttpException(res.status_code)
-            end
-            Logger.debug("Event successfully sent; {}".format(item.body))
-            return res
-          rescue StandardError => e
-            Logger.error("Failed to send event; {}".format(e))
-            if item.retry
-              if @coefficients.length == @attempt + 1
-                @attempt = 0
-              end
+    loop do
+      next unless !@queue.empty? && @send_enabled
 
-              back_off = @coefficients[@attempt] * @options.interval
-              Logger.debug("Automatic back-off of {}".format(back_off))
-              @send_enabled = false
-              time.sleep(back_off) # TODO add time sleep
-              @send_enabled = true
-            end
+      @queue.each do |item|
+        begin
+          res = @http_client.post(item.url, item.body)
+          if res.status_code == 401
+            item.retry = false
+          elsif res.status_code != 200
+            raise SecureNativeHttpException(res.status_code)
+          end
+          Logger.debug('Event successfully sent; {}'.format(item.body))
+          return res
+        rescue StandardError => e
+          Logger.error('Failed to send event; {}'.format(e))
+          if item.retry
+            @attempt = 0 if @coefficients.length == @attempt + 1
+
+            back_off = @coefficients[@attempt] * @options.interval
+            Logger.debug('Automatic back-off of {}'.format(back_off))
+            @send_enabled = false
+            time.sleep(back_off) # TODO: add time sleep
+            @send_enabled = true
           end
         end
-        time.sleep(self.interval / 1000) # TODO add time sleep
       end
+      time.sleep(@interval / 1000) # TODO: add time sleep
     end
   end
 
   def start_event_persist
-    Logger.debug("Starting automatic event persistence")
+    Logger.debug('Starting automatic event persistence')
     if @options.auto_send || @send_enabled
       @send_enabled = true
     else
-      Logger.debug("Automatic event persistence is disabled, you should persist events manually")
+      Logger.debug('Automatic event persistence is disabled, you should persist events manually')
     end
   end
 
   def stop_event_persist
     if @send_enabled
-      Logger.debug("Attempting to stop automatic event persistence")
+      Logger.debug('Attempting to stop automatic event persistence')
       begin
         flush
-        unless @thread.nil?
-          @thread.stop
-        end
-        Logger.debug("Stopped event persistence")
+        @thread&.stop
+        Logger.debug('Stopped event persistence')
       rescue StandardError => e
-        Logger.error("Could not stop event scheduler; {}".format(e))
+        Logger.error('Could not stop event scheduler; {}'.format(e))
       end
     end
   end
 
   def self.serialize(obj)
-    return {
-        :rid => obj.rid,
-        :eventType => obj.event_type,
-        :userId => obj.user_id,
-        :userTraits => {
-            :name => obj.user_traits.name,
-            :email => obj.user_traits.email,
-            :createdAt => obj.user_traits.created_at,
+    {
+        rid: obj.rid,
+        eventType: obj.event_type,
+        userId: obj.user_id,
+        userTraits: {
+            name: obj.user_traits.name,
+            email: obj.user_traits.email,
+            createdAt: obj.user_traits.created_at
         },
-        :request => {
-            :cid => obj.request.cid,
-            :vid => obj.request.vid,
-            :fp => obj.request.fp,
-            :ip => obj.request.ip,
-            :remoteIp => bj.request.remote_ip,
-            :method => obj.request.method,
-            :url => obj.request.url,
-            :headers => obj.request.headers
+        request: {
+            cid: obj.request.cid,
+            vid: obj.request.vid,
+            fp: obj.request.fp,
+            ip: obj.request.ip,
+            remoteIp: obj.request.remote_ip,
+            method: obj.request.method,
+            url: obj.request.url,
+            headers: obj.request.headers
         },
-        :timestamp => obj.timestamp,
-        :properties => obj.properties,
+        timestamp: obj.timestamp,
+        properties: obj.properties
     }
   end
 end
