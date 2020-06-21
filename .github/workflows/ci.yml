@@ -10,6 +10,7 @@ on:
 jobs:
   ci:
     runs-on: ubuntu-latest
+    name: CI
     steps:
       - name: Notify slack success
         if: success()
