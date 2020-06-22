@@ -1,4 +1,5 @@
 require_relative 'logger'
+require_relative 'utils/signature_utils'
 
 class SecureNative
   attr_reader :options
@@ -71,8 +72,10 @@ class SecureNative
     @securenative = nil
   end
 
-  # TODO!
   def verify_request_payload(request)
-    # code here
+    request_signature = request.header[SignatureUtils.SIGNATURE_HEADER]
+    body = request.body
+
+    SignatureUtils.valid_signature?(@options.api_key, body, request_signature)
   end
 end

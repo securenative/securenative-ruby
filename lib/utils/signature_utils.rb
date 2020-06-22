@@ -1,6 +1,8 @@
 require 'openssl'
 
 class SignatureUtils
+  SIGNATURE_HEADER = 'x-securenative'.freeze
+
   def self.valid_signature?(api_key, payload, header_signature)
     key = api_key.encode('utf-8')
     body = payload.encode('utf-8')

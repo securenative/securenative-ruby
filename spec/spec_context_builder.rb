@@ -1,7 +1,16 @@
+# frozen_string_literal: true
+
+require 'webmock/rspec'
+
 describe ContextBuilder do
   it 'creates context from request' do
-    # TODO: code here
+    stub_request(:any, 'www.example.com')
+      .to_return(body: nil, status: 200,
+                 headers: { 'x-securenative': '71532c1fad2c7f56118f7969e401f3cf080239140d208e7934e6a530818c37e544a0c2330a487bcc6fe4f662a57f265a3ed9f37871e80529128a5e4f2ca02db0fb975ded401398f698f19bb0cafd68a239c6caff99f6f105286ab695eaf3477365bdef524f5d70d9be1d1d474506b433aed05d7ed9a435eeca357de57817b37c638b6bb417ffb101eaf856987615a77a' },
+                 remote_ip: '', uri: 'www.securenative.com', method: 'Post', ip: '51.68.201.122',
+                 client_token: '71532c1fad2c7f56118f7969e401f3cf080239140d208e7934e6a530818c37e544a0c2330a487bcc6fe4f662a57f265a3ed9f37871e80529128a5e4f2ca02db0fb975ded401398f698f19bb0cafd68a239c6caff99f6f105286ab695eaf3477365bdef524f5d70d9be1d1d474506b433aed05d7ed9a435eeca357de57817b37c638b6bb417ffb101eaf856987615a77a')
 
+    request = Net::HTTP.get('www.example.com', '/')
     context = ContextBuilder.from_http_request(request).build
 
     expect(context.client_token).to eq('71532c1fad2c7f56118f7969e401f3cf080239140d208e7934e6a530818c37e544a0c2330a487bcc6fe4f662a57f265a3ed9f37871e80529128a5e4f2ca02db0fb975ded401398f698f19bb0cafd68a239c6caff99f6f105286ab695eaf3477365bdef524f5d70d9be1d1d474506b433aed05d7ed9a435eeca357de57817b37c638b6bb417ffb101eaf856987615a77a')
@@ -14,8 +23,13 @@ describe ContextBuilder do
   end
 
   it 'creates context from request with cookie' do
-    # TODO: code here
+    stub_request(:any, 'www.example.com')
+      .to_return(body: nil, status: 200,
+                 cookies: { '_sn': '71532c1fad2c7f56118f7969e401f3cf080239140d208e7934e6a530818c37e544a0c2330a487bcc6fe4f662a57f265a3ed9f37871e80529128a5e4f2ca02db0fb975ded401398f698f19bb0cafd68a239c6caff99f6f105286ab695eaf3477365bdef524f5d70d9be1d1d474506b433aed05d7ed9a435eeca357de57817b37c638b6bb417ffb101eaf856987615a77a' },
+                 remote_ip: '', uri: 'www.securenative.com', method: 'Post', ip: '51.68.201.122',
+                 client_token: '71532c1fad2c7f56118f7969e401f3cf080239140d208e7934e6a530818c37e544a0c2330a487bcc6fe4f662a57f265a3ed9f37871e80529128a5e4f2ca02db0fb975ded401398f698f19bb0cafd68a239c6caff99f6f105286ab695eaf3477365bdef524f5d70d9be1d1d474506b433aed05d7ed9a435eeca357de57817b37c638b6bb417ffb101eaf856987615a77a')
 
+    request = Net::HTTP.get('www.example.com', '/')
     context = ContextBuilder.from_http_request(request).build
 
     expect(context.client_token).to eq('71532c1fad2c7f56118f7969e401f3cf080239140d208e7934e6a530818c37e544a0c2330a487bcc6fe4f662a57f265a3ed9f37871e80529128a5e4f2ca02db0fb975ded401398f698f19bb0cafd68a239c6caff99f6f105286ab695eaf3477365bdef524f5d70d9be1d1d474506b433aed05d7ed9a435eeca357de57817b37c638b6bb417ffb101eaf856987615a77a')
