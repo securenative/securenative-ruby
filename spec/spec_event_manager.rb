@@ -20,7 +20,7 @@ describe EventManager do
   let(:event) { SampleEvent() }
 
   it 'successfully sends sync event with status code 200' do
-    options = ConfigurationManager.config_builder.with_api_key('YOUR_API_KEY').with_api_url('https://api.securenative-stg.com/collector/api/v1')
+    options = ConfigurationBuilder(api_key = 'YOUR_API_KEY', api_url = 'https://api.securenative-stg.com/collector/api/v1')
 
     res_body = '{"data": true}'
     stub_request(:post, 'https://api.securenative-stg.com/collector/api/v1/some-path/to-api')
@@ -32,7 +32,7 @@ describe EventManager do
   end
 
   it 'fails when send sync event status code is 401' do
-    options = ConfigurationManager.config_builder.with_api_key('YOUR_API_KEY').with_api_url('https://api.securenative-stg.com/collector/api/v1')
+    options = ConfigurationBuilder(api_key = 'YOUR_API_KEY', api_url = 'https://api.securenative-stg.com/collector/api/v1')
 
     stub_request(:post, 'https://api.securenative-stg.com/collector/api/v1/some-path/to-api').to_return(status: 401)
     event_manager = EventManager.new(options)
@@ -42,7 +42,7 @@ describe EventManager do
   end
 
   it 'fails when send sync event status code is 500' do
-    options = ConfigurationManager.config_builder.with_api_key('YOUR_API_KEY').with_api_url('https://api.securenative-stg.com/collector/api/v1')
+    options = ConfigurationBuilder(api_key = 'YOUR_API_KEY', api_url = 'https://api.securenative-stg.com/collector/api/v1')
 
     stub_request(:post, 'https://api.securenative-stg.com/collector/api/v1/some-path/to-api').to_return(status: 500)
     event_manager = EventManager.new(options)

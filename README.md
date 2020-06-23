@@ -12,6 +12,7 @@
   <a href="https://codecov.io/gh/securenative/securenative-ruby">
     <img src="https://codecov.io/gh/securenative/securenative-ruby/branch/master/graph/badge.svg" />
   </a>
+  <a href="https://badge.fury.io/rb/securenative"><img src="https://badge.fury.io/rb/securenative.svg" alt="Gem Version" height="18"></a>
 </p>
 <p align="center">
   <a href="https://docs.securenative.com">Documentation</a> |
@@ -60,7 +61,7 @@ secureative =  SecureNative.init
 require 'securenative'
 
 
-securenative =  SecureNative.init_with_api_key("YOUR_API_KEY")
+securenative =  SecureNative.init_with_api_key('YOUR_API_KEY')
 ```
 
 ### Option 3: Initialize via ConfigurationBuilder
@@ -68,11 +69,7 @@ securenative =  SecureNative.init_with_api_key("YOUR_API_KEY")
 require 'securenative'
 
 
-securenative = SecureNative.init_with_options(SecureNative.config_builder
-                                        .with_api_key("API_KEY")
-                                        .with_max_events(10)
-                                        .with_log_level("ERROR")
-                                        .build)
+securenative = SecureNative.init_with_options(SecureNative.config_builder(api_key = 'API_KEY', max_event = 10, log_level = 'ERROR'))                                 
 ```
 
 ## Getting SecureNative instance
@@ -94,22 +91,17 @@ require 'securenative'
 require 'securenative/enums/event_types'
 require 'securenative/event_options_builder'
 require 'securenative/models/user_traits'
+require 'securenative/context/context_builder'
 
 
 securenative = SecureNative.instance
 
-context = SecureNative.context_builder
-        .with_ip("127.0.0.1")
-        .with_client_token("SECURED_CLIENT_TOKEN")
-        .with_headers({"user-agent" => "Mozilla/5.0 (iPad; U; CPU OS 3_2_1 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Mobile/7B405"})
-        .build
+context = securenative.context_builder(ip = '127.0.0.1', client_token = 'SECURED_CLIENT_TOKEN',
+        headers = { 'user-agent' => 'Mozilla/5.0 (iPad; U; CPU OS 3_2_1 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Mobile/7B405' })
 
-event_options = EventOptionsBuilder(EventTypes::LOG_IN)
-        .with_user_id("USER_ID")
-        .with_user_traits(UserTraits("USER_NAME", "USER_EMAIL"))
-        .with_context(context)
-        .with_properties({"prop1" => "CUSTOM_PARAM_VALUE", "prop2" => true, "prop3" => 3})
-        .build
+event_options = EventOptionsBuilder(event_type = EventTypes::LOG_IN,
+        user_id = 'USER_ID', user_traits = UserTraits('USER_NAME', 'USER_EMAIL'),
+        context = context, properties = {prop1 => 'CUSTOM_PARAM_VALUE', prop2 => true, prop3 => 3}).build
 
 securenative.track(event_options)
  ```
@@ -127,12 +119,9 @@ def track(request)
     securenative = SecureNative.instance
     context = SecureNative.context_builder.from_http_request(request).build
 
-    event_options = EventOptionsBuilder(EventTypes::LOG_IN)
-        .with_user_id("USER_ID")
-        .with_user_traits(UserTraits("USER_NAME", "USER_EMAIL"))
-        .with_context(context)
-        .with_properties({"prop1" => "CUSTOM_PARAM_VALUE", "prop2" => true, "prop3" => 3})
-        .build
+    event_options = EventOptionsBuilder(event_type = EventTypes::LOG_IN,
+            user_id = 'USER_ID', user_traits = UserTraits('USER_NAME', 'USER_EMAIL'),
+            context = context, properties = {prop1 => 'CUSTOM_PARAM_VALUE', prop2 => true, prop3 => 3}).build
     
     securenative.track(event_options)
 end
@@ -153,12 +142,9 @@ def track(request)
     securenative = SecureNative.instance
     context = SecureNative.context_builder.from_http_request(request).build
 
-    event_options = EventOptionsBuilder(EventTypes::LOG_IN)
-        .with_user_id("USER_ID")
-        .with_user_traits(UserTraits("USER_NAME", "USER_EMAIL"))
-        .with_context(context)
-        .with_properties({"prop1" => "CUSTOM_PARAM_VALUE", "prop2" => true, "prop3" => 3})
-        .build
+    event_options = EventOptionsBuilder(event_type = EventTypes::LOG_IN,
+        user_id = 'USER_ID', user_traits = UserTraits('USER_NAME', 'USER_EMAIL'),
+        context = context, properties = {prop1 => 'CUSTOM_PARAM_VALUE', prop2 => true, prop3 => 3}).build
     
     verify_result = securenative.verify(event_options)
     verify_result.risk_level  # Low, Medium, High

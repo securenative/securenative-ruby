@@ -2,7 +2,7 @@
 
 describe SecureNativeHttpClient do
   it 'makes a simple post call' do
-    options = ConfigurationManager.config_builder.with_api_key('YOUR_API_KEY').with_api_url('https://api.securenative-stg.com/collector/api/v1')
+    options = ConfigurationBuilder(api_key = 'YOUR_API_KEY', api_url = 'https://api.securenative-stg.com/collector/api/v1')
 
     stub_request(:post, 'https://api.securenative-stg.com/collector/api/v1/track')
       .with(body: { event: 'SOME_EVENT_NAME' }).to_return(status: 200)

@@ -40,15 +40,14 @@ class ConfigurationManager
 
     properties = read_resource_file(resource_path)
 
-    ConfigurationBuilder()
-      .with_api_key(_get_env_or_default(properties, 'SECURENATIVE_API_KEY', options.api_key))
-      .with_api_url(_get_env_or_default(properties, 'SECURENATIVE_API_URL', options.api_url))
-      .with_interval(_get_env_or_default(properties, 'SECURENATIVE_INTERVAL', options.interval))
-      .with_max_events(_get_env_or_default(properties, 'SECURENATIVE_MAX_EVENTS', options.max_events))
-      .with_timeout(_get_env_or_default(properties, 'SECURENATIVE_TIMEOUT', options.timeout))
-      .with_auto_send(_get_env_or_default(properties, 'SECURENATIVE_AUTO_SEND', options.auto_send))
-      .with_disable(_get_env_or_default(properties, 'SECURENATIVE_DISABLE', options.disable))
-      .with_log_level(_get_env_or_default(properties, 'SECURENATIVE_LOG_LEVEL', options.log_level))
-      .with_fail_over_strategy(_get_env_or_default(properties, 'SECURENATIVE_FAILOVER_STRATEGY', options.fail_over_strategy))
+    ConfigurationBuilder(_get_env_or_default(properties, 'SECURENATIVE_API_KEY', options.api_key),
+                         _get_env_or_default(properties, 'SECURENATIVE_API_URL', options.api_url),
+                         _get_env_or_default(properties, 'SECURENATIVE_INTERVAL', options.interval),
+                         _get_env_or_default(properties, 'SECURENATIVE_MAX_EVENTS', options.max_events),
+                         _get_env_or_default(properties, 'SECURENATIVE_TIMEOUT', options.timeout),
+                         _get_env_or_default(properties, 'SECURENATIVE_AUTO_SEND', options.auto_send),
+                         _get_env_or_default(properties, 'SECURENATIVE_DISABLE', options.disable),
+                         _get_env_or_default(properties, 'SECURENATIVE_LOG_LEVEL', options.log_level),
+                         _get_env_or_default(properties, 'SECURENATIVE_FAILOVER_STRATEGY', options.fail_over_strategy))
   end
 end

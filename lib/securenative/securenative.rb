@@ -31,8 +31,7 @@ class SecureNative
     raise SecureNativeConfigException('You must pass your SecureNative api key') if Utils.null_or_empty?(api_key)
 
     if @securenative.nil?
-      builder = ConfigurationBuilder().default_config_builder
-      options = builder.with_api_key(api_key)
+      options = ConfigurationBuilder(api_key = api_key)
       @securenative = SecureNative.new(options)
       @securenative
     else
@@ -52,12 +51,14 @@ class SecureNative
     @securenative
   end
 
-  def self.config_builder
-    ConfigurationBuilder.default_config_builder
+  def self.config_builder(api_key = nil, api_url = 'https://api.securenative.com/collector/api/v1', interval = 1000,
+                          max_events = 1000, timeout = 1500, auto_send = true, disable = false, log_level = 'FATAL',
+                          fail_over_strategy = FailOverStrategy::FAIL_OPEN)
+    ConfigurationBuilder(api_key, api_url, interval, max_events, timeout, auto_send, disable, log_level, fail_over_strategy)
   end
 
-  def self.context_builder
-    ContextBuilder.default_context_builder
+  def self.context_builder(client_token = nil, ip = nil, remote_ip = nil, headers = nil, url = nil, method = nil, body = nil)
+    ContextBuilder(client_token, ip, remote_ip, headers, url, method, body)
   end
 
   def track(event_options)

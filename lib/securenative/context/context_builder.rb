@@ -1,41 +1,36 @@
 class ContextBuilder
-  def initialize
-    @context = SecureNativeContext()
+  attr_reader :context
+
+  def initialize(client_token = nil, ip = nil, remote_ip = nil, headers = nil, url = nil, method = nil, body = nil)
+    @context = SecureNativeContext(client_token, ip, remote_ip, headers, url, method, body)
   end
 
-  def with_client_token(client_token)
+  def client_token(client_token)
     @context.client_token = client_token
-    self
   end
 
-  def with_ip(ip)
+  def ip(ip)
     @context.ip = ip
-    self
   end
 
-  def with_remote_ip(remote_ip)
+  def remote_ip(remote_ip)
     @context.remote_ip = remote_ip
-    self
   end
 
-  def with_headers(headers)
+  def headers(headers)
     @context.headers = headers
-    self
   end
 
-  def with_url(url)
+  def url(url)
     @context.url = url
-    self
   end
 
-  def with_method(method)
+  def method(method)
     @context.method = method
-    self
   end
 
-  def with_body(body)
+  def body(body)
     @context.body = body
-    self
   end
 
   def self.default_context_builder
@@ -57,17 +52,8 @@ class ContextBuilder
 
     client_token = RequestUtils.get_secure_header_from_request(headers) if Utils.null_or_empty?(client_token)
 
-    ContextBuilder()
-      .with_url(request.url)
-      .with_method(request.method)
-      .with_headers(headers)
-      .with_client_token(client_token)
-      .with_ip(RequestUtils.get_client_ip_from_request(request))
-      .with_remote_ip(RequestUtils.get_remote_ip_from_request(request))
-      .with_body(nil)
-  end
-
-  def build
-    @context
+    ContextBuilder(url = request.url, method = request.method, header = headers, client_token = client_token,
+                   client_ip = RequestUtils.get_client_ip_from_request(request),
+                   remote_ip = RequestUtils.get_remote_ip_from_request(request), nil)
   end
 end
