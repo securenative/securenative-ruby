@@ -100,7 +100,7 @@ context = securenative.context_builder(ip = '127.0.0.1', client_token = 'SECURED
         headers = { 'user-agent' => 'Mozilla/5.0 (iPad; U; CPU OS 3_2_1 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Mobile/7B405' })
 
 event_options = EventOptionsBuilder(event_type = EventTypes::LOG_IN,
-        user_id = 'USER_ID', user_traits = UserTraits('USER_NAME', 'USER_EMAIL'),
+        user_id = '1234', user_traits = UserTraits('Your Name', 'name@gmail.com'),
         context = context, properties = {prop1 => 'CUSTOM_PARAM_VALUE', prop2 => true, prop3 => 3}).build
 
 securenative.track(event_options)
@@ -120,7 +120,7 @@ def track(request)
     context = SecureNative.context_builder.from_http_request(request).build
 
     event_options = EventOptionsBuilder(event_type = EventTypes::LOG_IN,
-            user_id = 'USER_ID', user_traits = UserTraits('USER_NAME', 'USER_EMAIL'),
+            user_id = '1234', user_traits = UserTraits('Your Name', 'name@gmail.com'),
             context = context, properties = {prop1 => 'CUSTOM_PARAM_VALUE', prop2 => true, prop3 => 3}).build
     
     securenative.track(event_options)
@@ -138,12 +138,12 @@ require 'securenative/event_options_builder'
 require 'securenative/models/user_traits'
 
 
-def track(request)
+def verify(request)
     securenative = SecureNative.instance
     context = SecureNative.context_builder.from_http_request(request).build
 
     event_options = EventOptionsBuilder(event_type = EventTypes::LOG_IN,
-        user_id = 'USER_ID', user_traits = UserTraits('USER_NAME', 'USER_EMAIL'),
+        user_id = '1234', user_traits = UserTraits('Your Name', 'name@gmail.com'),
         context = context, properties = {prop1 => 'CUSTOM_PARAM_VALUE', prop2 => true, prop3 => 3}).build
     
     verify_result = securenative.verify(event_options)
