@@ -1,0 +1,2 @@
+class SecureNativeInvalidUriException < StandardError
+end

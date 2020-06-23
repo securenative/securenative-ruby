@@ -1,88 +1,149 @@
-require_relative 'securenative_options'
-require_relative 'http_client'
-require_relative 'sn_exception'
-require 'json'
-require 'thread'
+require_relative 'logger'
 
 class QueueItem
-  def initialize(url, body)
+  attr_reader :url, :body, :retry
+  attr_writer :url, :body, :retry
+
+  def initialize(url, body, _retry)
     @url = url
     @body = body
+    @retry = _retry
   end
-
-  attr_reader :url
-  attr_reader :body
 end
 
 class EventManager
-  def initialize(api_key, options: SecureNativeOptions.new, http_client: HttpClient.new)
-    if api_key == nil
-      raise SecureNativeSDKException.new
+  def initialize(options = SecureNativeOptions(), http_client = nil)
+    if options.api_key.nil?
+      raise SecureNativeSDKException('API key cannot be None, please get your API key from SecureNative console.')
     end
 
-    @api_key = api_key
+    @http_client = if http_client.nil?
+                     SecureNativeHttpClient(options)
+                   else
+                     http_client
+                   end
+
+    @queue = []
+    @thread = Thread.new(run)
+    @thread.start
+
     @options = options
-    @http_client = http_client
-    @queue = Queue.new
+    @send_enabled = false
+    @attempt = 0
+    @coefficients = [1, 1, 2, 3, 5, 8, 13]
+    @thread = nil
+    @interval = options.interval
+  end
 
-    if @options.auto_send
-      interval_seconds = [(@options.interval / 1000).floor, 1].max
-      Thread.new do
-        loop do
-          flush
-          sleep(interval_seconds)
-        end
-      end
+  def send_async(event, resource_path)
+    if @options.disable
+      Logger.warning('SDK is disabled. no operation will be performed')
+      return
     end
-  end
 
-  def send_async(event, path)
-    q_item = QueueItem.new(build_url(path), event)
-    @queue.push(q_item)
-  end
-
-  def send_sync(event, path)
-    @http_client.post(
-        build_url(path),
-        @api_key,
-        event.to_hash.to_json
-    )
+    item = QueueItem(resource_path, JSON.parse(EventManager.serialize(event)), false)
+    @queue.append(item)
   end
 
   def flush
-    if is_queue_full
-      i = @options.max_events - 1
-      while i >= 0
-        item = @queue.pop
-        @http_client.post(
-            build_url(item.url),
-            @api_key,
-            item.body.to_hash.to_json
-        )
+    @queue.each do |item|
+      @http_client.post(item.url, item.body)
+    end
+  end
+
+  def send_sync(event, resource_path, _retry)
+    if @options.disable
+      Logger.warning('SDK is disabled. no operation will be performed')
+      return
+    end
+
+    Logger.debug('Attempting to send event {}'.format(event))
+    res = @http_client.post(resource_path, JSON.parse(EventManager.serialize(event)))
+
+    if res.status_code != 200
+      Logger.info('SecureNative failed to call endpoint {} with event {}. adding back to queue'.format(resource_path, event))
+      item = QueueItem(resource_path, JSON.parse(EventManager.serialize(event)), _retry)
+      @queue.append(item)
+    end
+
+    res
+  end
+
+  def run
+    loop do
+      next unless !@queue.empty? && @send_enabled
+
+      @queue.each do |item|
+        begin
+          res = @http_client.post(item.url, item.body)
+          if res.status_code == 401
+            item.retry = false
+          elsif res.status_code != 200
+            raise SecureNativeHttpException(res.status_code)
+          end
+          Logger.debug('Event successfully sent; {}'.format(item.body))
+          return res
+        rescue StandardError => e
+          Logger.error('Failed to send event; {}'.format(e))
+          if item.retry
+            @attempt = 0 if @coefficients.length == @attempt + 1
+
+            back_off = @coefficients[@attempt] * @options.interval
+            Logger.debug('Automatic back-off of {}'.format(back_off))
+            @send_enabled = false
+            sleep back_off
+            @send_enabled = true
+          end
+        end
       end
+      sleep @interval / 1000
+    end
+  end
+
+  def start_event_persist
+    Logger.debug('Starting automatic event persistence')
+    if @options.auto_send || @send_enabled
+      @send_enabled = true
     else
-      q = Array.new(@queue.size) {@queue.pop}
-      q.each do |item|
-        @http_client.post(
-            build_url(item.url),
-            @api_key,
-            item.body
-        )
-        @queue = Queue.new
+      Logger.debug('Automatic event persistence is disabled, you should persist events manually')
+    end
+  end
+
+  def stop_event_persist
+    if @send_enabled
+      Logger.debug('Attempting to stop automatic event persistence')
+      begin
+        flush
+        @thread&.stop
+        Logger.debug('Stopped event persistence')
+      rescue StandardError => e
+        Logger.error('Could not stop event scheduler; {}'.format(e))
       end
     end
   end
 
-  private
-
-  def build_url(path)
-    @options.api_url + path
+  def self.serialize(obj)
+    {
+        rid: obj.rid,
+        eventType: obj.event_type,
+        userId: obj.user_id,
+        userTraits: {
+            name: obj.user_traits.name,
+            email: obj.user_traits.email,
+            createdAt: obj.user_traits.created_at
+        },
+        request: {
+            cid: obj.request.cid,
+            vid: obj.request.vid,
+            fp: obj.request.fp,
+            ip: obj.request.ip,
+            remoteIp: obj.request.remote_ip,
+            method: obj.request.method,
+            url: obj.request.url,
+            headers: obj.request.headers
+        },
+        timestamp: obj.timestamp,
+        properties: obj.properties
+    }
   end
-
-  private
-
-  def is_queue_full
-    @queue.length > @options.max_events
-  end
-
 end

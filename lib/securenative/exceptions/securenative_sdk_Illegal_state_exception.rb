@@ -1,0 +1,2 @@
+class SecureNativeSDKIllegalStateException < StandardError
+end

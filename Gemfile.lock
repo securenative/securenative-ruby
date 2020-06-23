@@ -1,13 +1,26 @@
 PATH
   remote: .
   specs:
-    securenative (0.1.5)
+    securenative (0.1.16)
 
 GEM
   remote: https://rubygems.org/
   specs:
+    addressable (2.7.0)
+      public_suffix (>= 2.0.2, < 5.0)
+    codecov (0.1.17)
+      json
+      simplecov
+      url
+    crack (0.4.3)
+      safe_yaml (~> 1.0.0)
     diff-lcs (1.3)
+    docile (1.3.2)
+    hashdiff (1.0.1)
     httpclient (2.8.3)
+    json (2.3.0)
+    parseconfig (1.0.8)
+    public_suffix (4.0.5)
     rake (12.3.3)
     rspec (3.8.0)
       rspec-core (~> 3.8.0)
@@ -22,16 +35,29 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.8.0)
     rspec-support (3.8.2)
+    safe_yaml (1.0.5)
+    simplecov (0.18.5)
+      docile (~> 1.1)
+      simplecov-html (~> 0.11)
+    simplecov-html (0.12.2)
+    url (0.3.2)
+    webmock (3.8.3)
+      addressable (>= 2.3.6)
+      crack (>= 0.3.2)
+      hashdiff (>= 0.4.0, < 2.0.0)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   bundler (~> 2.0)
+  codecov
   httpclient
+  parseconfig
   rake
   rspec
   securenative!
+  webmock
 
 BUNDLED WITH
-   2.1.0.pre.1
+   2.1.4
