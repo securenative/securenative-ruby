@@ -8,21 +8,10 @@ on:
       - dev-*
 
 jobs:
-  ci:
-    runs-on: ubuntu-latest
+  test:
     name: CI
+    runs-on: ubuntu-18.04
     steps:
-      - name: Notify slack success
-        if: success()
-        id: slack # IMPORTANT: reference this step ID value in future Slack steps
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1.1.1
-        with:
-          channel: github-actions
-          status: STARTING
-          color: warning
-
       - uses: actions/checkout@v1
       - uses: actions/setup-ruby@v1
         with:
