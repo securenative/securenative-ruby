@@ -10,7 +10,7 @@ class SampleEvent
     @timestamp = Time.now.strftime('%Y-%m-%dT%H:%M:%S.%L%Z')
     @rid = '432532'
     @user_id = '1'
-    @user_traits = UserTraits('some user', 'email@securenative.com')
+    @user_traits = UserTraits('some user', 'email@securenative.com', '+1234567890')
     @request = RequestContext()
     @properties = []
   end
