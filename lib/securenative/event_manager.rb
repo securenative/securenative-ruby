@@ -130,6 +130,7 @@ class EventManager
         userTraits: {
             name: obj.user_traits.name,
             email: obj.user_traits.email,
+            phone: obj.user_traits.phone,
             createdAt: obj.user_traits.created_at
         },
         request: {
