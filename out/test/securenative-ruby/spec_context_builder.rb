@@ -55,8 +55,8 @@ RSpec.describe SecureNativeContext do
   end
 
   it 'creates custom context with context builder' do
-    context = SecureNativeContext.new(client_token: 'SECRET_TOKEN', ip: '10.0.0.0', remote_ip: '10.0.0.0',
-                                      headers: { 'header' => 'value1' }, url: '/some-url', http_method: 'Get', body: nil)
+    context = SecureNativeContext.new('SECRET_TOKEN', '10.0.0.0', '10.0.0.0',
+                                      { 'header' => 'value1' }, '/some-url', 'Get', nil)
 
     expect(context.url).to eq('/some-url')
     expect(context.client_token).to eq('SECRET_TOKEN')

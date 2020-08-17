@@ -4,18 +4,18 @@ require 'parseconfig'
 
 class ConfigurationManager
   DEFAULT_CONFIG_FILE = 'securenative.cfg'
-  CUSTOM_CONFIG_FILE_ENV_NAME = 'SECURENATIVE_CONFIG_FILE'
+  CUSTOM_CONFIG_FILE_ENV_NAME = 'SECURENATIVE_COMFIG_FILE'
   @config = nil
 
   def self.read_resource_file(resource_path)
     @config = ParseConfig.new(resource_path)
 
     properties = {}
-    @config.get_groups.each do |group|
+    @config.get_groups.each { |group|
       group.each do |key, value|
         properties[key.upcase] = value
       end
-    end
+    }
     properties
   end
 

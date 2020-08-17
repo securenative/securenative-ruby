@@ -36,7 +36,7 @@ class EventManager
     @attempt = 0
     @coefficients = [1, 1, 2, 3, 5, 8, 13]
 
-    @thread = Thread.new { run }
+    @thread = Thread.new {run}
   end
 
   def send_async(event, resource_path)
@@ -45,7 +45,7 @@ class EventManager
       return
     end
 
-    item = QueueItem(resource_path, JSON.parse(EventManager.stringnify(event)), false)
+    item = QueueItem(resource_path, JSON.parse(EventManager.serialize(event)), false)
     @queue.append(item)
   end
 
@@ -62,11 +62,11 @@ class EventManager
     end
 
     SecureNativeLogger.debug("Attempting to send event #{event}")
-    res = @http_client.post(resource_path, EventManager.serialize(event).to_json)
+    res = @http_client.post(resource_path, JSON.parse(EventManager.serialize(event)))
 
     if res.status_code != 200
-      SecureNativeLogger.info("SecureNative failed to call endpoint #{resource_path} with event #{event}. adding back to queue")
-      item = QueueItem(resource_path, EventManager.serialize(event).to_json, retry_sending)
+      SecureNativeLogger.info('SecureNative failed to call endpoint {} with event {}. adding back to queue'.format(resource_path, event))
+      item = QueueItem(resource_path, JSON.parse(EventManager.serialize(event)), retry_sending)
       @queue.append(item)
     end
 
@@ -86,15 +86,15 @@ class EventManager
             elsif res.status_code != 200
               raise SecureNativeHttpError, res.status_code
             end
-            SecureNativeLogger.debug("Event successfully sent; #{item.body}")
+            SecureNativeLogger.debug('Event successfully sent; {}'.format(item.body))
             return res
           rescue StandardError => e
-            SecureNativeLogger.error("Failed to send event; #{e}")
+            SecureNativeLogger.error('Failed to send event; {}'.format(e))
             if item.retry_sending
               @attempt = 0 if @coefficients.length == @attempt + 1
 
               back_off = @coefficients[@attempt] * @options.interval
-              SecureNativeLogger.debug("Automatic back-off of #{back_off}")
+              SecureNativeLogger.debug('Automatic back-off of {}'.format(back_off))
               @send_enabled = false
               sleep back_off
               @send_enabled = true
@@ -123,7 +123,7 @@ class EventManager
         @thread&.stop
         SecureNativeLogger.debug('Stopped event persistence')
       rescue StandardError => e
-        SecureNativeLogger.error("Could not stop event scheduler; #{e}")
+        SecureNativeLogger.error('Could not stop event scheduler; {}'.format(e))
       end
     end
   end

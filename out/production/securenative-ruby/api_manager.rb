@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'models/sdk_event'
-require 'enums/failover_strategy'
 require 'json'
 
 class ApiManager
@@ -22,14 +20,12 @@ class ApiManager
 
     begin
       res = JSON.parse(@event_manager.send_sync(event, ApiRoute::VERIFY, false))
-      return VerifyResult.new(risk_level: res['riskLevel'], score: res['score'], triggers: res['triggers'])
+      return VerifyResult.new(res['riskLevel'], res['score'], res['triggers'])
     rescue StandardError => e
-      SecureNativeLogger.debug("Failed to call verify; #{e}")
+      SecureNativeLogger.debug('Failed to call verify; {}'.format(e))
     end
-    if @options.fail_over_strategy == FailOverStrategy::FAIL_OPEN
-      return VerifyResult.new(risk_level: RiskLevel::LOW, score: 0, triggers: nil)
-    end
+    return VerifyResult.new(RiskLevel::LOW, 0, nil) if @options.fail_over_strategy == FailOverStrategy::FAIL_OPEN
 
-    VerifyResult.new(risk_level: RiskLevel::HIGH, score: 1, triggers: nil)
+    VerifyResult.new(RiskLevel::HIGH, 1, nil)
   end
 end
