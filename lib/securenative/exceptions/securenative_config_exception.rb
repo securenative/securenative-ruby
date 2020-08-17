@@ -1,2 +1,0 @@
-class SecureNativeConfigException < StandardError
-end

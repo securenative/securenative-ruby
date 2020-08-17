@@ -1,20 +1,23 @@
 # frozen_string_literal: true
 
+require 'api_manager'
 require 'webmock/rspec'
+require 'rspec'
 
-describe ApiManager do
+RSpec.describe ApiManager do
   let(:context) do
-    ContextBuilder(ip = '127.0.0.1', client_token = 'SECURED_CLIENT_TOKEN', headers = {'user-agent' => 'Mozilla/5.0 (iPad; U; CPU OS 3_2_1 like Mac OS X; en-us)' \
-                    'AppleWebKit/531.21.10 (KHTML, like Gecko) Mobile/7B405'})
+    ContextBuilder(ip: '127.0.0.1', client_token: 'SECURED_CLIENT_TOKEN',
+                   headers: { 'user-agent' => 'Mozilla/5.0 (iPad; U; CPU OS 3_2_1 like Mac OS X; en-us)
+                   AppleWebKit/531.21.10 (KHTML, like Gecko) Mobile/7B405' })
   end
   let(:event_options) do
-    EventOptionsBuilder(event_type = EventTypes.LOG_IN, user_id = 'USER_ID',
-                        user_traits = UserTraits('USER_NAME', 'USER_EMAIL', '+1234567890'),
-                        properties = {prop1: 'CUSTOM_PARAM_VALUE', prop2: true, prop3: 3}).build
+    EventOptions(event_type: EventTypes.LOG_IN, user_id: 'USER_ID',
+                 user_traits: UserTraits('USER_NAME', 'USER_EMAIL', '+1234567890'),
+                 properties: { prop1: 'CUSTOM_PARAM_VALUE', prop2: true, prop3: 3 }).build
   end
 
   it 'tracks an event' do
-    options = ConfigurationBuilder(api_key = 'YOUR_API_KEY', auto_send = true, interval = 10, api_url = 'https://api.securenative-stg.com/collector/api/v1')
+    options = ConfigurationBuilder.new(api_key: 'YOUR_API_KEY', auto_send: true, interval: 10, api_url: 'https://api.securenative-stg.com/collector/api/v1')
 
     expected = '{"eventType":"sn.user.login","userId":"USER_ID","userTraits":{' \
                    '"name":"USER_NAME","email":"USER_EMAIL","phone":"+1234567890","createdAt":null},"request":{' \
@@ -24,7 +27,7 @@ describe ApiManager do
                    '"properties":{"prop2":true,"prop1":"CUSTOM_PARAM_VALUE","prop3":3}}'
 
     stub_request(:post, 'https://api.securenative-stg.com/collector/api/v1/track')
-        .with(body: JSON.parse(expected)).to_return(status: 200)
+      .with(body: JSON.parse(expected)).to_return(status: 200)
     event_manager = EventManager.new(options)
     event_manager.start_event_persist
     api_manager = ApiManager.new(event_manager, options)
@@ -37,7 +40,7 @@ describe ApiManager do
   end
 
   it 'uses invalid options' do
-    options = ConfigurationBuilder(api_key = 'YOUR_API_KEY', auto_send = true, interval = 10, api_url = 'https://api.securenative-stg.com/collector/api/v1')
+    options = ConfigurationBuilder(api_key: 'YOUR_API_KEY', auto_send: true, interval: 10, api_url: 'https://api.securenative-stg.com/collector/api/v1')
 
     properties = {}
     (0..12).each do |i|
@@ -50,18 +53,18 @@ describe ApiManager do
     api_manager = ApiManager.new(event_manager, options)
 
     begin
-      expect { api_manager.track(EventOptionsBuilder(event_type = EventTypes.LOG_IN, properties = properties).build) }
-          .to raise_error(SecureNativeInvalidOptionsException)
+      expect { api_manager.track(EventOptions(event_type: EventTypes.LOG_IN, properties: properties).build) }
+        .to raise_error(SecureNativeInvalidOptionsError)
     ensure
       event_manager.stop_event_persist
     end
   end
 
   it 'verifies an event' do
-    options = ConfigurationBuilder(api_key = 'YOUR_API_KEY', api_url = 'https://api.securenative-stg.com/collector/api/v1')
+    options = ConfigurationBuilder(api_key: 'YOUR_API_KEY', api_url: 'https://api.securenative-stg.com/collector/api/v1')
 
     stub_request(:post, 'https://api.securenative-stg.com/collector/api/v1/track')
-        .with(body: {riskLevel: 'medium', score: 0.32, triggers: ['New IP', 'New City']}).to_return(status: 200)
+      .with(body: { riskLevel: 'medium', score: 0.32, triggers: ['New IP', 'New City'] }).to_return(status: 200)
     verify_result = VerifyResult.new(RiskLevel.LOW, 0, nil)
 
     event_manager = EventManager.new(options)

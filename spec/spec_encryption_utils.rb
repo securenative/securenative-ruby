@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
-describe EncryptionUtils do
+require 'utils/encryption_utils'
+require 'rspec'
+
+RSpec.describe EncryptionUtils do
   let(:SECRET_KEY) { 'B00C42DAD33EAC6F6572DA756EA4915349C0A4F6' }
   let(:PAYLOAD) { '{"cid":"198a41ff-a10f-4cda-a2f3-a9ca80c0703b","vi":"148a42ff-b40f-4cda-a2f3-a8ca80c0703b","fp":"6d8cabd95987f8318b1fe01593d5c2a5.24700f9f1986800ab4fcc880530dd0ed"}' }
   let(:CID) { '198a41ff-a10f-4cda-a2f3-a9ca80c0703b' }

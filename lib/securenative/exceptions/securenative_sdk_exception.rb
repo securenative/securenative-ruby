@@ -1,2 +1,0 @@
-class SecureNativeSDKException < StandardError
-end

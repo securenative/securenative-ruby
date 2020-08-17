@@ -1,0 +1,28 @@
+example_id                                   | status | run_time        |
+-------------------------------------------- | ------ | --------------- |
+./spec/spec_api_manager.rb[1:1]              | failed | 0.00012 seconds |
+./spec/spec_api_manager.rb[1:2]              | failed | 0.00009 seconds |
+./spec/spec_api_manager.rb[1:3]              | failed | 0.00007 seconds |
+./spec/spec_context_builder.rb[1:1]          | failed | 0.00045 seconds |
+./spec/spec_context_builder.rb[1:2]          | failed | 0.00019 seconds |
+./spec/spec_context_builder.rb[1:3]          | passed | 0.00158 seconds |
+./spec/spec_context_builder.rb[1:4]          | passed | 0.00086 seconds |
+./spec/spec_date_utils.rb[1:1]               | passed | 0.00081 seconds |
+./spec/spec_encryption_utils.rb[1:1]         | failed | 0.0145 seconds  |
+./spec/spec_encryption_utils.rb[1:2]         | failed | 0.00009 seconds |
+./spec/spec_event_manager.rb[1:1]            | failed | 0.00011 seconds |
+./spec/spec_event_manager.rb[1:2]            | failed | 0.0001 seconds  |
+./spec/spec_event_manager.rb[1:3]            | failed | 0.00013 seconds |
+./spec/spec_ip_utils.rb[1:1]                 | passed | 0.00094 seconds |
+./spec/spec_ip_utils.rb[1:2]                 | passed | 0.00005 seconds |
+./spec/spec_ip_utils.rb[1:3]                 | passed | 0.00009 seconds |
+./spec/spec_ip_utils.rb[1:4]                 | passed | 0.00005 seconds |
+./spec/spec_ip_utils.rb[1:5]                 | passed | 0.00353 seconds |
+./spec/spec_ip_utils.rb[1:6]                 | passed | 0.00011 seconds |
+./spec/spec_ip_utils.rb[1:7]                 | passed | 0.00011 seconds |
+./spec/spec_securenative.rb[1:1]             | passed | 0.00107 seconds |
+./spec/spec_securenative.rb[1:2]             | passed | 0.00009 seconds |
+./spec/spec_securenative.rb[1:3]             | passed | 0.00006 seconds |
+./spec/spec_securenative_http_client.rb[1:1] | failed | 0.00375 seconds |
+./spec/spec_signature_utils.rb[1:1]          | passed | 0.00226 seconds |
+./spec/spec_signature_utils.rb[1:2]          | passed | 0.00011 seconds |

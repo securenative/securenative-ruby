@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
-describe IpUtils do
+require 'utils/ip_utils'
+require 'rspec'
+
+RSpec.describe IpUtils do
   it 'checks if ip address valid ipv4' do
     valid_ipv4 = '172.16.254.1'
     expect(IpUtils.ip_address?(valid_ipv4)).to be_truthy
