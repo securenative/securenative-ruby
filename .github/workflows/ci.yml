@@ -25,9 +25,6 @@ jobs:
           bundler install
       - name: Run tests
         run: bundle exec rspec spec --pattern **/spec_*.rb
-      - name: Upload to Codecov
-        if: ${{ always() }}
-        run: bash <(curl -s https://codecov.io/bash)
 
       - name: Notify slack success
         if: success()
