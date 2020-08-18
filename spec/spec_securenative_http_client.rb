@@ -16,8 +16,6 @@ RSpec.describe SecureNativeHttpClient do
 
     res = client.post('track', payload)
 
-    expect(res.ok).to eq(true)
     expect(res.status_code).to eq(200)
-    expect(res.text).to eq(payload)
   end
 end

@@ -66,7 +66,7 @@ class EventManager
 
     if res.status_code != 200
       SecureNativeLogger.info("SecureNative failed to call endpoint #{resource_path} with event #{event}. adding back to queue")
-      item = QueueItem(resource_path, EventManager.serialize(event).to_json, retry_sending)
+      item = QueueItem.new(resource_path, EventManager.serialize(event).to_json, retry_sending)
       @queue.append(item)
     end
 

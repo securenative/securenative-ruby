@@ -9,6 +9,7 @@ require 'errors/securenative_config_error'
 require 'enums/failover_strategy'
 require 'config/configuration_builder'
 require 'event_manager'
+require 'api_manager'
 
 class SecureNative
   attr_reader :options

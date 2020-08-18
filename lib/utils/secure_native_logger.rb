@@ -8,17 +8,17 @@ class SecureNativeLogger
   def self.init_logger(level = 'DEBUG')
     @logger.level = case level
                     when 'WARN'
-                      SecureNativeLogger::WARN
+                      Logger::WARN
                     when 'DEBUG'
-                      SecureNativeLogger::DEBUG
+                      Logger::DEBUG
                     when 'ERROR'
-                      SecureNativeLogger::ERROR
+                      Logger::ERROR
                     when 'FATAL'
-                      SecureNativeLogger::FATAL
+                      Logger::FATAL
                     when 'INFO'
-                      SecureNativeLogger::INFO
+                      Logger::INFO
                     else
-                      SecureNativeLogger::FATAL
+                      Logger::FATAL
                     end
 
     @logger.formatter = proc do |severity, datetime, progname, msg|

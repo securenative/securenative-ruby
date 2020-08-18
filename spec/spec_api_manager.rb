@@ -28,8 +28,8 @@ RSpec.describe ApiManager do
     event_manager = EventManager.new(options)
     event_manager.start_event_persist
     api_manager = ApiManager.new(event_manager, options)
-    event_options = EventOptions.new(event_type: EventTypes::LOG_IN, user_id: 'USER_ID',
-                                     user_traits: UserTraits.new('USER_NAME', 'USER_EMAIL', '+1234567890'),
+    event_options = EventOptions.new(event: EventTypes::LOG_IN, user_id: 'USER_ID',
+                                     user_traits: UserTraits.new(name: 'USER_NAME', email: 'USER_EMAIL', phone: '+1234567890'),
                                      properties: { prop1: 'CUSTOM_PARAM_VALUE', prop2: true, prop3: 3 })
 
     begin
@@ -53,7 +53,7 @@ RSpec.describe ApiManager do
     api_manager = ApiManager.new(event_manager, options)
 
     begin
-      expect { api_manager.track(EventOptions.new(event_type: EventTypes::LOG_IN, properties: properties)) }
+      expect { api_manager.track(EventOptions.new(event: EventTypes::LOG_IN, properties: properties)) }
         .to raise_error(SecureNativeInvalidOptionsError)
     ensure
       event_manager.stop_event_persist
@@ -70,7 +70,7 @@ RSpec.describe ApiManager do
     event_manager = EventManager.new(options)
     event_manager.start_event_persist
     api_manager = ApiManager.new(event_manager, options)
-    event_options = EventOptions.new(event_type: EventTypes::LOG_IN, user_id: 'USER_ID',
+    event_options = EventOptions.new(event: EventTypes::LOG_IN, user_id: 'USER_ID',
                                      user_traits: UserTraits.new(name: 'USER_NAME', email: 'USER_EMAIL', phone: '+1234567890'),
                                      properties: { prop1: 'CUSTOM_PARAM_VALUE', prop2: true, prop3: 3 })
 
