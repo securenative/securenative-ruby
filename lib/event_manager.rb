@@ -45,7 +45,7 @@ class EventManager
       return
     end
 
-    item = QueueItem(resource_path, JSON.parse(EventManager.stringnify(event)), false)
+    item = QueueItem.new(resource_path, EventManager.serialize(event).to_json, false)
     @queue.append(item)
   end
 
@@ -120,7 +120,7 @@ class EventManager
       SecureNativeLogger.debug('Attempting to stop automatic event persistence')
       begin
         flush
-        @thread&.stop
+        @thread&.stop?
         SecureNativeLogger.debug('Stopped event persistence')
       rescue StandardError => e
         SecureNativeLogger.error("Could not stop event scheduler; #{e}")
