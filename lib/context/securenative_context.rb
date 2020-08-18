@@ -1,10 +1,13 @@
 # frozen_string_literal: true
 
 require 'utils/request_utils'
+require 'utils/utils'
 
 class SecureNativeContext
   attr_reader :client_token, :ip, :remote_ip, :headers, :url, :http_method, :body
   attr_writer :client_token, :ip, :remote_ip, :headers, :url, :http_method, :body
+
+  SECURENATIVE_COOKIE = '_sn'
 
   def initialize(client_token: nil, ip: nil, remote_ip: nil, headers: nil, url: nil, http_method: nil, body: nil)
     @client_token = client_token
@@ -27,16 +30,25 @@ class SecureNativeContext
       client_token = nil
     end
 
+    client_token = request[SECURENATIVE_COOKIE] if client_token.nil?
+    client_token = request['-sn'] if client_token.nil? # bypass webmock parsing header bug
+
     begin
-      headers = request.headers
+      parsed = JSON.parse(request.body)
+    rescue StandardError
+      parsed = {}
+    end
+
+    begin
+      headers = request.header.to_hash
     rescue StandardError
       headers = nil
     end
 
     client_token = RequestUtils.get_secure_header_from_request(headers) if Utils.null_or_empty?(client_token)
 
-    SecureNativeContext.new(url: request.url, http_method: request.http_method, headers: headers,
-                            client_token: client_token, ip: RequestUtils.get_client_ip_from_request(request),
-                            remote_ip: RequestUtils.get_remote_ip_from_request(request), body: nil)
+    SecureNativeContext.new(client_token: client_token, ip: parsed['ip'] || RequestUtils.get_client_ip_from_request(request),
+                            remote_ip: parsed['remote_ip'] || RequestUtils.get_remote_ip_from_request(parsed),
+                            headers: headers, url: parsed['uri'] || '', http_method: parsed['http_method'] || '', body: nil)
   end
 end

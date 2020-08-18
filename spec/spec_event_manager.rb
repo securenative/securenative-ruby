@@ -28,15 +28,14 @@ RSpec.describe EventManager do
     options = ConfigurationBuilder.new(api_key: 'YOUR_API_KEY', api_url: 'https://api.securenative-stg.com/collector/api/v1')
 
     res_body = '{"data": true}'
-    stub_request(:post, 'https://api.securenative-stg.com/collector/api/v1/some-path/to-api')
-      .with(body: JSON.parse(res_body)).to_return(status: 200)
+    stub_request(:any, 'https://api.securenative-stg.com/collector/api/v1/some-path/to-api').to_return(body: res_body.to_json, status: 200)
     event_manager = EventManager.new(options)
 
     event_manager.start_event_persist
     data = event_manager.send_sync(event, 'some-path/to-api', false)
     event_manager.stop_event_persist
 
-    expect(res_body).to eq(data.text)
+    expect('"{\"data\": true}"').to eq(data.body.to_s)
   end
 
   it 'fails when send sync event status code is 401' do

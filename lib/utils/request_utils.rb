@@ -11,13 +11,21 @@ class RequestUtils
   end
 
   def self.get_client_ip_from_request(request)
-    x_forwarded_for = request.env['HTTP_X_FORWARDED_FOR']
-    return x_forwarded_for unless x_forwarded_for.nil?
+    begin
+      x_forwarded_for = request.env['HTTP_X_FORWARDED_FOR']
+      return x_forwarded_for unless x_forwarded_for.nil?
+    rescue NoMethodError
+      return ''
+    end
 
     request.env['REMOTE_ADDR']
   end
 
   def self.get_remote_ip_from_request(request)
-    request.remote_ip
+    begin
+      request.remote_ip
+    rescue NoMethodError
+      return ''
+    end
   end
 end
