@@ -7,4 +7,3 @@ gem "httpclient"
 gem "parseconfig"
 gem "webmock"
 gem "simplecov"
-gem "codecov", :require => false, :group => :test
