@@ -49,7 +49,6 @@ RSpec.describe SecureNative do
     expect(securenative).to eq(SecureNative.instance)
   end
 
-
   it 'inits sdk with builder' do
     SecureNative._flush
     securenative = SecureNative.init_with_options(SecureNative.config_builder(api_key: 'API_KEY', max_events: 10, log_level: 'ERROR'))

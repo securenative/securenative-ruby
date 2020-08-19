@@ -24,31 +24,41 @@ class SecureNativeContext
   end
 
   def self.from_http_request(request)
+    client_token = RailsContext.get_client_token(request)
+    client_token = SinatraContext.get_client_token(request) if client_token.nil?
+    client_token = HanamiContext.get_client_token(request) if client_token.nil?
+
     begin
-      client_token = request.cookies[RequestUtils.SECURENATIVE_COOKIE]
+      headers = RailsContext.get_headers(request)
+      headers = SinatraContext.get_headers(request) if headers.nil?
+      headers = HanamiContext.get_headers(request) if headers.nil?
+
+      # Standard Ruby request
+      headers = request.header.to_hash if headers.nil?
     rescue StandardError
-      client_token = nil
+      headers = []
     end
 
-    client_token = request[SECURENATIVE_COOKIE] if client_token.nil?
-    client_token = request['-sn'] if client_token.nil? # bypass webmock parsing header bug
+    url = RailsContext.get_url(request)
+    url = SinatraContext.get_url(request) if url.nil?
+    url = HanamiContext.get_url(request) if url.nil?
+    url = '' if url.nil?
+
+    method = RailsContext.get_method(request)
+    method = SinatraContext.get_method(request) if method.nil?
+    method = HanamiContext.get_method(request) if method.nil?
+    method = '' if method.nil?
 
     begin
-      parsed = JSON.parse(request.body)
+      body = request.body.to_s
     rescue StandardError
-      parsed = {}
-    end
-
-    begin
-      headers = request.header.to_hash
-    rescue StandardError
-      headers = nil
+      body = ''
     end
 
     client_token = RequestUtils.get_secure_header_from_request(headers) if Utils.null_or_empty?(client_token)
 
-    SecureNativeContext.new(client_token: client_token, ip: parsed['ip'] || RequestUtils.get_client_ip_from_request(request),
-                            remote_ip: parsed['remote_ip'] || RequestUtils.get_remote_ip_from_request(parsed),
-                            headers: headers, url: parsed['uri'] || '', http_method: parsed['http_method'] || '', body: nil)
+    SecureNativeContext.new(client_token: client_token, ip: RequestUtils.get_client_ip_from_request(request),
+                            remote_ip: RequestUtils.get_remote_ip_from_request(request),
+                            headers: headers, url: url, http_method: method || '', body: body)
   end
 end

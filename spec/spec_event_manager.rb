@@ -22,10 +22,9 @@ class SampleEvent
 end
 
 RSpec.describe EventManager do
-  let(:event) { SampleEvent.new }
-
   it 'successfully sends sync event with status code 200' do
     options = ConfigurationBuilder.new(api_key: 'YOUR_API_KEY', api_url: 'https://api.securenative-stg.com/collector/api/v1')
+    event = SampleEvent.new
 
     res_body = '{"data": true}'
     stub_request(:any, 'https://api.securenative-stg.com/collector/api/v1/some-path/to-api').to_return(body: res_body.to_json, status: 200)
@@ -40,6 +39,7 @@ RSpec.describe EventManager do
 
   it 'fails when send sync event status code is 401' do
     options = ConfigurationBuilder.new(api_key: 'YOUR_API_KEY', api_url: 'https://api.securenative-stg.com/collector/api/v1')
+    event = SampleEvent.new
 
     stub_request(:post, 'https://api.securenative-stg.com/collector/api/v1/some-path/to-api').to_return(status: 401)
     event_manager = EventManager.new(options)
@@ -50,6 +50,7 @@ RSpec.describe EventManager do
 
   it 'fails when send sync event status code is 500' do
     options = ConfigurationBuilder.new(api_key: 'YOUR_API_KEY', api_url: 'https://api.securenative-stg.com/collector/api/v1')
+    event = SampleEvent.new
 
     stub_request(:post, 'https://api.securenative-stg.com/collector/api/v1/some-path/to-api').to_return(status: 500)
     event_manager = EventManager.new(options)
