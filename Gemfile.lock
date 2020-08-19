@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    securenative (0.1.18)
+    securenative (0.1.19)
 
 GEM
   remote: https://rubygems.org/
@@ -64,6 +64,11 @@ GEM
     addressable (2.7.0)
       public_suffix (>= 2.0.2, < 5.0)
     builder (3.2.4)
+    codecov (0.2.6)
+      colorize
+      json
+      simplecov
+    colorize (0.8.1)
     concurrent-ruby (1.1.7)
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
@@ -148,10 +153,10 @@ GEM
     http_router (0.11.2)
       rack (>= 1.0.0)
       url_mount (~> 0.2.1)
-    httpclient (2.8.3)
     i18n (1.8.5)
       concurrent-ruby (~> 1.0)
     inflecto (0.0.2)
+    json (2.3.1)
     loofah (2.6.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
@@ -256,8 +261,8 @@ PLATFORMS
 
 DEPENDENCIES
   bundler (~> 2.0)
+  codecov
   hanami
-  httpclient
   parseconfig
   rails
   rake

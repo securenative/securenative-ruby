@@ -36,7 +36,7 @@ gem 'securenative'
 
 Then execute:
 
-    $ bundle
+    $ bundle install
 
 Or install it yourself as:
 
