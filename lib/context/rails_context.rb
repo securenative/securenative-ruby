@@ -13,11 +13,11 @@ class RailsContext
     begin
       # Rails >= 3.x
       request.fullpath
-    rescue StoreError
+    rescue StandardError
       begin
         # Rails < 3.x & Sinatra
         request.url if url.nil?
-      rescue StoreError
+      rescue StandardError
         nil
       end
     end
@@ -26,7 +26,7 @@ class RailsContext
   def self.get_method(request)
     begin
       request.method
-    rescue StoreError
+    rescue StandardError
       nil
     end
   end
@@ -34,7 +34,7 @@ class RailsContext
   def self.get_headers(request)
     begin
       request.headers.to_hash
-    rescue StoreError
+    rescue StandardError
       nil
     end
   end

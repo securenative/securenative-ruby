@@ -12,7 +12,7 @@ class HanamiContext
   def self.get_url(request)
     begin
       request.env['REQUEST_PATH']
-    rescue StoreError
+    rescue StandardError
       nil
     end
   end
@@ -20,7 +20,7 @@ class HanamiContext
   def self.get_method(request)
     begin
       request.request_method
-    rescue StoreError
+    rescue StandardError
       nil
     end
   end
@@ -28,7 +28,7 @@ class HanamiContext
   def self.get_headers(request)
     begin
       request.headers.to_hash
-    rescue StoreError
+    rescue StandardError
       nil
     end
   end

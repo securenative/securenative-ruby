@@ -2,6 +2,9 @@
 
 require 'utils/request_utils'
 require 'utils/utils'
+require 'context/rails_context'
+require 'context/hanami_context'
+require 'context/sinatra_context'
 
 class SecureNativeContext
   attr_reader :client_token, :ip, :remote_ip, :headers, :url, :http_method, :body
