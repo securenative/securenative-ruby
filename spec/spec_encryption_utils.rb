@@ -1,23 +1,26 @@
 # frozen_string_literal: true
 
-describe EncryptionUtils do
-  let(:SECRET_KEY) { 'B00C42DAD33EAC6F6572DA756EA4915349C0A4F6' }
-  let(:PAYLOAD) { '{"cid":"198a41ff-a10f-4cda-a2f3-a9ca80c0703b","vi":"148a42ff-b40f-4cda-a2f3-a8ca80c0703b","fp":"6d8cabd95987f8318b1fe01593d5c2a5.24700f9f1986800ab4fcc880530dd0ed"}' }
-  let(:CID) { '198a41ff-a10f-4cda-a2f3-a9ca80c0703b' }
-  let(:FP) { '6d8cabd95987f8318b1fe01593d5c2a5.24700f9f1986800ab4fcc880530dd0ed' }
+require 'utils/encryption_utils'
+require 'rspec'
 
-  it 'decrypts' do
-    result = EncryptionUtils.encrypt(:PAYLOAD, :SECRET_KEY)
+RSpec.describe EncryptionUtils do
+  it 'encrypts' do
+    secret_key = 'B00C42DAD33EAC6F6572DA756EA4915349C0A4F6'
+    payload = '{"cid":"198a41ff-a10f-4cda-a2f3-a9ca80c0703b","vi":"148a42ff-b40f-4cda-a2f3-a8ca80c0703b","fp":"6d8cabd95987f8318b1fe01593d5c2a5.24700f9f1986800ab4fcc880530dd0ed"}'
+    result = EncryptionUtils.encrypt(payload, secret_key)
 
     expect(result).not_to be_nil
-    expect(result.length).to eq(:PAYLOAD.length)
   end
 
-  it 'encrypts' do
-    encrypted_payload = '5208ae703cc2fa0851347f55d3b76d3fd6035ee081d71a401e8bc92ebdc25d42440f62310bda60628537744ac03f200d78da9e61f1019ce02087b7ce6c976e7b2d8ad6aa978c532cea8f3e744cc6a5cafedc4ae6cd1b08a4ef75d6e37aa3c0c76954d16d57750be2980c2c91ac7ef0bbd0722abd59bf6be22493ea9b9759c3ff4d17f17ab670b0b6fc320e6de982313f1c4e74c0897f9f5a32d58e3e53050ae8fdbebba9009d0d1250fe34dcde1ebb42acbc22834a02f53889076140f0eb8db1'
-    result = EncryptionUtils.decrypt(encrypted_payload, :SECRET_KEY)
+  it 'decrypts' do
+    secret_key = 'B00C42DAD33EAC6F6572DA756EA4915349C0A4F6'
+    encrypted_payload = '56463564485361554e70763250546e334954565667673d3d246949482f446b72352f6b31316a63466d4c515339703631754b6e54557854546e4a554433634b67744641712f44647356386569636f6a322b4c55354d0a4c6b72504d37464c6f5746632f614f644b542f38585346374566515954355859326a386e576a4439717a7a6a4269744363522f79386851522b7067640a2f67307a6e3264385a5130705a6d44356f4a50396e3236764133635144387379586d6835377475626452783165425976764b6b756952746b79544e350a58477552522f7051706c5a3838646b6a4f44753959626332697a723433564b6b72496943624d584f707770456355316d61662f7256706b3d'
+    cid = '198a41ff-a10f-4cda-a2f3-a9ca80c0703b'
+    fp = '6d8cabd95987f8318b1fe01593d5c2a5.24700f9f1986800ab4fcc880530dd0ed'
 
-    expect(result.cid).to eq(:CID)
-    expect(result.fp).to eq(:FP)
+    result = EncryptionUtils.decrypt(encrypted_payload, secret_key)
+
+    expect(result.cid).to eq(cid)
+    expect(result.fp).to eq(fp)
   end
 end

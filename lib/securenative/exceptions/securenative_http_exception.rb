@@ -1,2 +1,0 @@
-class SecureNativeHttpException < StandardError
-end

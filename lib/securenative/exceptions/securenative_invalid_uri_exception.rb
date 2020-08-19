@@ -1,2 +1,0 @@
-class SecureNativeInvalidUriException < StandardError
-end

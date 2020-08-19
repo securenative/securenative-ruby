@@ -5,5 +5,8 @@ gem "rspec"
 gem "rake"
 gem "httpclient"
 gem "parseconfig"
-gem "webmock"
-gem "codecov", :require => false, :group => :test
+gem "simplecov", :require => false, :group => :test
+gem "webmock", :require => false, :group => :test
+gem "rails", :require => false, :group => :test
+gem "hanami", :require => false, :group => :test
+gem "sinatra", :require => false, :group => :test
