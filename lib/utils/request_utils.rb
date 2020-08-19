@@ -5,8 +5,11 @@ class RequestUtils
   SECURENATIVE_HEADER = 'x-securenative'
 
   def self.get_secure_header_from_request(headers)
-    return headers[SECURENATIVE_HEADER] unless headers.nil?
-
+    begin
+      return headers[SECURENATIVE_HEADER] unless headers.nil?
+    rescue StandardError
+      []
+    end
     []
   end
 

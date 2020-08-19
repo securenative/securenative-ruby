@@ -2,6 +2,9 @@
 
 require 'context/securenative_context'
 require 'webmock/rspec'
+require 'rails'
+require 'hanami'
+require 'sinatra'
 require 'rspec'
 
 RSpec.describe SecureNativeContext do
@@ -22,12 +25,39 @@ RSpec.describe SecureNativeContext do
   end
 
   it 'creates context from rails request' do
+    request = ActionDispatch::Request.new(nil)
+    context = SecureNativeContext.from_http_request(request)
+
+    expect(context.ip).to eq('')
+    expect(context.http_method).to eq('')
+    expect(context.url).to eq('')
+    expect(context.remote_ip).to eq('')
+    expect(context.headers).to eq([])
+    expect(context.body).to eq('')
   end
 
   it 'creates context from sinatra request' do
+    request = Sinatra::Request.new(nil)
+    context = SecureNativeContext.from_http_request(request)
+
+    expect(context.ip).to eq('')
+    expect(context.http_method).to eq('')
+    expect(context.url).to eq('')
+    expect(context.remote_ip).to eq('')
+    expect(context.headers).to eq([])
+    expect(context.body).to eq('')
   end
 
   it 'creates context from hanami request' do
+    request = Hanami::Action::Request
+    context = SecureNativeContext.from_http_request(request)
+
+    expect(context.ip).to eq('')
+    expect(context.http_method).to eq('')
+    expect(context.url).to eq('')
+    expect(context.remote_ip).to eq('')
+    expect(context.headers).to eq([])
+    expect(context.body).to eq('')
   end
 
   it 'creates default context builder' do
