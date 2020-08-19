@@ -9,7 +9,7 @@ GEM
     addressable (2.7.0)
       public_suffix (>= 2.0.2, < 5.0)
     aes (0.5.0)
-    codecov (0.1.17)
+    codecov
       json
       simplecov
       url
