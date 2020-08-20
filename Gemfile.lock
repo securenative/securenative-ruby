@@ -174,7 +174,6 @@ GEM
     nio4r (2.5.2)
     nokogiri (1.10.10)
       mini_portile2 (~> 2.4.0)
-    parseconfig (1.0.8)
     public_suffix (4.0.5)
     rack (2.2.3)
     rack-protection (2.0.8.1)
@@ -263,7 +262,6 @@ DEPENDENCIES
   bundler (~> 2.0)
   codecov
   hanami
-  parseconfig
   rails
   rake
   rspec

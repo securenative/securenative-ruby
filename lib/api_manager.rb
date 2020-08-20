@@ -24,8 +24,9 @@ class ApiManager
     event = SDKEvent.new(event_options, @options)
 
     begin
-      res = @event_manager.send_sync(event, ApiRoute::VERIFY, false).to_json
-      return VerifyResult.new(risk_level: res['riskLevel'], score: res['score'], triggers: res['triggers'])
+      res = @event_manager.send_sync(event, ApiRoute::VERIFY, false)
+      ver_result = JSON.parse(res.body)
+      return VerifyResult.new(risk_level: ver_result['riskLevel'], score: ver_result['score'], triggers: ver_result['triggers'])
     rescue StandardError => e
       SecureNativeLogger.debug("Failed to call verify; #{e}")
     end

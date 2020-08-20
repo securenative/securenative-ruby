@@ -8,6 +8,7 @@ require 'errors/securenative_sdk_Illegal_state_error'
 require 'errors/securenative_config_error'
 require 'enums/failover_strategy'
 require 'config/configuration_builder'
+require 'config/configuration_manager'
 require 'event_manager'
 require 'api_manager'
 
