@@ -12,7 +12,7 @@ class SecureNativeContext
 
   SECURENATIVE_COOKIE = '_sn'
 
-  def initialize(client_token: nil, ip: nil, remote_ip: nil, headers: nil, url: nil, http_method: nil, body: nil)
+  def initialize(client_token: '', ip: '', remote_ip: '', headers: nil, url: '', http_method: '', body: '')
     @client_token = client_token
     @ip = ip
     @remote_ip = remote_ip

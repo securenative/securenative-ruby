@@ -4,6 +4,7 @@ require 'utils/secure_native_logger'
 require 'config/securenative_options'
 require 'http/securenative_http_client'
 require 'errors/securenative_sdk_error'
+require 'errors/securenative_http_error'
 
 class QueueItem
   attr_reader :url, :body, :retry_sending
@@ -64,7 +65,7 @@ class EventManager
     SecureNativeLogger.debug("Attempting to send event #{event}")
     res = @http_client.post(resource_path, EventManager.serialize(event).to_json)
 
-    if res.code != 200
+    if res.nil? || res.code != 200
       SecureNativeLogger.info("SecureNative failed to call endpoint #{resource_path} with event #{event}. adding back to queue")
       item = QueueItem.new(resource_path, EventManager.serialize(event).to_json, retry_sending)
       @queue.append(item)
@@ -81,9 +82,9 @@ class EventManager
         @queue.each do |item|
           begin
             res = @http_client.post(item.url, item.body)
-            if res.status_code == 401
+            if res.code == '401'
               item.retry_sending = false
-            elsif res.status_code != 200
+            elsif res.code != '200'
               raise SecureNativeHttpError, res.status_code
             end
             SecureNativeLogger.debug("Event successfully sent; #{item.body}")
@@ -145,7 +146,7 @@ class EventManager
         fp: obj.request.fp,
         ip: obj.request.ip,
         remoteIp: obj.request.remote_ip,
-        http_method: obj.request.http_method,
+        method: obj.request.http_method || '',
         url: obj.request.url,
         headers: obj.request.headers
       },

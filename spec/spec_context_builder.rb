@@ -63,13 +63,13 @@ RSpec.describe SecureNativeContext do
   it 'creates default context builder' do
     context = SecureNativeContext.default_context_builder
 
-    expect(context.client_token).to be_nil
-    expect(context.ip).to be_nil
-    expect(context.http_method).to be_nil
-    expect(context.url).to be_nil
-    expect(context.remote_ip).to be_nil
+    expect(context.client_token).to eq('')
+    expect(context.ip).to eq('')
+    expect(context.http_method).to eq('')
+    expect(context.url).to eq('')
+    expect(context.remote_ip).to eq('')
     expect(context.headers).to be_nil
-    expect(context.body).to be_nil
+    expect(context.body).to eq('')
   end
 
   it 'creates custom context with context builder' do

@@ -3,6 +3,8 @@
 require 'net/http'
 require 'uri'
 require 'json'
+require 'utils/version_utils'
+require 'utils/secure_native_logger'
 
 class SecureNativeHttpClient
   AUTHORIZATION_HEADER = 'Authorization'
@@ -30,9 +32,19 @@ class SecureNativeHttpClient
     headers = _headers
 
     client = Net::HTTP.new(uri.host, uri.port)
-    request = Net::HTTP::Post.new(uri.request_uri, headers)
-    request.body = body.to_json
+    client.use_ssl = true
+    client.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
-    client.request(request)
+    request = Net::HTTP::Post.new(uri.request_uri, headers)
+    request.body = body
+
+    res = nil
+    begin
+      res = client.request(request)
+    rescue StandardError => e
+      SecureNativeLogger.error("Failed to send request; #{e}")
+      return res
+    end
+    res
   end
 end

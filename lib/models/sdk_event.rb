@@ -2,6 +2,8 @@
 
 require 'context/securenative_context'
 require 'utils/encryption_utils'
+require 'utils/date_utils'
+require 'models/request_context'
 
 class SDKEvent
   attr_reader :context, :rid, :event_type, :user_id, :user_traits, :request, :timestamp, :properties
@@ -20,9 +22,11 @@ class SDKEvent
     @event_type = event_options.event
     @user_id = event_options.user_id
     @user_traits = event_options.user_traits
-    @request = RequestContext(client_token ? client_token.cid : '', client_token ? client_token.vid : '',
-                              client_token ? client_token.fp : '', @context.ip,
-                              @context.remote_ip, @context.headers, @context.url, @context.http_method)
+    @request = RequestContext.new(cid: client_token ? client_token.cid : '', vid: client_token ? client_token.vid : '',
+                                  fp: client_token ? client_token.fp : '', ip: @context.ip,
+                                  remote_ip: @context.remote_ip, headers: @context.headers,
+                                  url: @context.url, http_method: @context.http_method)
+
 
     @timestamp = DateUtils.to_timestamp(event_options.timestamp)
     @properties = event_options.properties

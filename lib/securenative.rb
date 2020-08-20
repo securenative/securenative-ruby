@@ -61,19 +61,6 @@ class SecureNative
     @securenative
   end
 
-  def self.config_builder(api_key: nil, api_url: 'https://api.securenative.com/collector/api/v1', interval: 1000,
-                          max_events: 1000, timeout: 1500, auto_send: true, disable: false, log_level: 'FATAL',
-                          fail_over_strategy: FailOverStrategy::FAIL_OPEN)
-    ConfigurationBuilder.new(api_key: api_key, api_url: api_url, interval: interval, max_events: max_events,
-                             timeout: timeout, auto_send: auto_send, disable: disable, log_level: log_level,
-                             fail_over_strategy: fail_over_strategy)
-  end
-
-  def self.context_builder(client_token: nil, ip: nil, remote_ip: nil, headers: nil, url: nil, http_method: nil, body: nil)
-    SecureNativeContext.new(client_token: client_token, ip: ip, remote_ip: remote_ip, headers: headers,
-                            url: url, http_method: http_method, body: body)
-  end
-
   def track(event_options)
     @api_manager.track(event_options)
   end

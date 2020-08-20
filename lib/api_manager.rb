@@ -2,6 +2,9 @@
 
 require 'models/sdk_event'
 require 'enums/failover_strategy'
+require 'enums/risk_level'
+require 'enums/api_route'
+require 'models/verify_result'
 require 'json'
 
 class ApiManager
@@ -21,7 +24,7 @@ class ApiManager
     event = SDKEvent.new(event_options, @options)
 
     begin
-      res = JSON.parse(@event_manager.send_sync(event, ApiRoute::VERIFY, false))
+      res = @event_manager.send_sync(event, ApiRoute::VERIFY, false).to_json
       return VerifyResult.new(risk_level: res['riskLevel'], score: res['score'], triggers: res['triggers'])
     rescue StandardError => e
       SecureNativeLogger.debug("Failed to call verify; #{e}")
