@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class HanamiContext
+  SECURENATIVE_COOKIE = '_sn'
+
   def self.get_client_token(request)
     begin
       request.env[SECURENATIVE_COOKIE]
@@ -27,7 +29,7 @@ class HanamiContext
 
   def self.get_headers(request)
     begin
-      request.headers.to_hash
+      request.headers.to_h
     rescue StandardError
       nil
     end

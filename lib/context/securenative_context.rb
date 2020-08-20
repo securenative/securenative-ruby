@@ -37,7 +37,7 @@ class SecureNativeContext
       headers = HanamiContext.get_headers(request) if headers.nil?
 
       # Standard Ruby request
-      headers = request.header.to_hash if headers.nil?
+      headers = request.header.to_h if headers.nil?
     rescue StandardError
       headers = []
     end

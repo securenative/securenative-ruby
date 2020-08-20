@@ -4,6 +4,7 @@ require 'context/securenative_context'
 require 'utils/encryption_utils'
 require 'utils/date_utils'
 require 'models/request_context'
+require 'securerandom'
 
 class SDKEvent
   attr_reader :context, :rid, :event_type, :user_id, :user_traits, :request, :timestamp, :properties

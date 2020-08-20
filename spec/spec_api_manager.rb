@@ -29,8 +29,8 @@ RSpec.describe ApiManager do
     event_manager.start_event_persist
     api_manager = ApiManager.new(event_manager, options)
     event_options = EventOptions.new(event: EventTypes::LOG_IN, user_id: 'USER_ID',
-                                     user_traits: UserTraits.new(name: 'USER_NAME', email: 'USER_EMAIL', phone: '+1234567890'),
-                                     properties: { prop1: 'CUSTOM_PARAM_VALUE', prop2: true, prop3: 3 })
+                                                 user_traits: UserTraits.new(name: 'USER_NAME', email: 'USER_EMAIL', phone: '+1234567890'),
+                                                 properties: { prop1: 'CUSTOM_PARAM_VALUE', prop2: true, prop3: 3 })
 
     begin
       api_manager.track(event_options)
@@ -71,8 +71,8 @@ RSpec.describe ApiManager do
     event_manager.start_event_persist
     api_manager = ApiManager.new(event_manager, options)
     event_options = EventOptions.new(event: EventTypes::LOG_IN, user_id: 'USER_ID',
-                                     user_traits: UserTraits.new(name: 'USER_NAME', email: 'USER_EMAIL', phone: '+1234567890'),
-                                     properties: { prop1: 'CUSTOM_PARAM_VALUE', prop2: true, prop3: 3 })
+                                                 user_traits: UserTraits.new(name: 'USER_NAME', email: 'USER_EMAIL', phone: '+1234567890'),
+                                                 properties: { prop1: 'CUSTOM_PARAM_VALUE', prop2: true, prop3: 3 })
 
     result = api_manager.verify(event_options)
 
