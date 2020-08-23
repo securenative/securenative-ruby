@@ -7,7 +7,11 @@ class HanamiContext
     begin
       request.env[SECURENATIVE_COOKIE]
     rescue StandardError
-      nil
+      begin
+        request.cookies[SECURENATIVE_COOKIE]
+      rescue StandardError
+        nil
+      end
     end
   end
 
