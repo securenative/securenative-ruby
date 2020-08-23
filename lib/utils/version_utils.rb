@@ -3,11 +3,9 @@
 class VersionUtils
   def self.version
     begin
-      spec = Gem::Specification.load('securenative.gemspec')
-      version = spec.version.to_s
+      Gem.loaded_specs['securenative'].version.to_s
     rescue StandardError
-      version = 'unknown'
+      'unknown'
     end
-    version
   end
 end
