@@ -34,7 +34,7 @@ class SinatraContext
   def self.get_headers(request)
     begin
       # Note: At the moment we're filtering out everything but user-agent since ruby's payload is way too big
-      {"user-agent" => request.env['HTTP_USER_AGENT']}
+      { 'user-agent' => request.env['HTTP_USER_AGENT'] }
     rescue StandardError
       nil
     end
