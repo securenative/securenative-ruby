@@ -26,15 +26,18 @@ RSpec.describe EventManager do
     options = ConfigurationBuilder.new(api_key: 'YOUR_API_KEY', api_url: 'https://api.securenative-stg.com/collector/api/v1')
     event = SampleEvent.new
 
-    stub_request(:post, 'https://api.securenative-stg.com/collector/api/v1/some-path/to-api')
-      .with(headers: {
-              'Accept' => '*/*',
-              'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-              'Authorization' => 'YOUR_API_KEY',
-              'Content-Type' => 'application/json',
-              'Sn-Version' => '0.1.21',
-              'User-Agent' => 'SecureNative-ruby'
-            }).to_return(status: 200, body: '', headers: {})
+    stub_request(:post, "https://api.securenative-stg.com/collector/api/v1/some-path/to-api").
+        with(
+            headers: {
+                'Accept'=>'*/*',
+                'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+                'Authorization'=>'YOUR_API_KEY',
+                'Content-Type'=>'application/json',
+                'Sn-Version'=>'0.1.22',
+                'User-Agent'=>'SecureNative-ruby'
+            }).
+        to_return(status: 200, body: "", headers: {})
+
     event_manager = EventManager.new(options)
 
     event_manager.start_event_persist
@@ -48,15 +51,17 @@ RSpec.describe EventManager do
     options = ConfigurationBuilder.new(api_key: 'YOUR_API_KEY', api_url: 'https://api.securenative-stg.com/collector/api/v1')
     event = SampleEvent.new
 
-    stub_request(:post, 'https://api.securenative-stg.com/collector/api/v1/some-path/to-api')
-      .with(headers: {
-              'Accept' => '*/*',
-              'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-              'Authorization' => 'YOUR_API_KEY',
-              'Content-Type' => 'application/json',
-              'Sn-Version' => '0.1.21',
-              'User-Agent' => 'SecureNative-ruby'
-            }).to_return(status: 401, body: '', headers: {})
+    stub_request(:post, "https://api.securenative-stg.com/collector/api/v1/some-path/to-api").
+        with(
+            headers: {
+                'Accept'=>'*/*',
+                'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+                'Authorization'=>'YOUR_API_KEY',
+                'Content-Type'=>'application/json',
+                'Sn-Version'=>'0.1.22',
+                'User-Agent'=>'SecureNative-ruby'
+            }).
+        to_return(status: 401, body: "", headers: {})
 
     event_manager = EventManager.new(options)
     res = event_manager.send_sync(event, 'some-path/to-api', false)
@@ -68,15 +73,18 @@ RSpec.describe EventManager do
     options = ConfigurationBuilder.new(api_key: 'YOUR_API_KEY', api_url: 'https://api.securenative-stg.com/collector/api/v1')
     event = SampleEvent.new
 
-    stub_request(:post, 'https://api.securenative-stg.com/collector/api/v1/some-path/to-api')
-      .with(headers: {
-              'Accept' => '*/*',
-              'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-              'Authorization' => 'YOUR_API_KEY',
-              'Content-Type' => 'application/json',
-              'Sn-Version' => '0.1.21',
-              'User-Agent' => 'SecureNative-ruby'
-            }).to_return(status: 500, body: '', headers: {})
+    stub_request(:post, "https://api.securenative-stg.com/collector/api/v1/some-path/to-api").
+        with(
+            headers: {
+                'Accept'=>'*/*',
+                'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+                'Authorization'=>'YOUR_API_KEY',
+                'Content-Type'=>'application/json',
+                'Sn-Version'=>'0.1.22',
+                'User-Agent'=>'SecureNative-ruby'
+            }).
+        to_return(status: 500, body: "", headers: {})
+
     event_manager = EventManager.new(options)
     res = event_manager.send_sync(event, 'some-path/to-api', false)
 

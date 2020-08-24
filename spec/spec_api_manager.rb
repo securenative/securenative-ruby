@@ -57,19 +57,18 @@ RSpec.describe ApiManager do
   it 'verifies an event' do
     options = ConfigurationBuilder.new(api_key: 'YOUR_API_KEY', api_url: 'https://api.securenative-stg.com/collector/api/v1')
 
-    # stub_request(:post, 'https://api.securenative-stg.com/collector/api/v1/track')
-    #     .with(body: { riskLevel: 'medium', score: 0.32, triggers: ['New IP', 'New City'] }).to_return(status: 200)
+    stub_request(:post, "https://api.securenative-stg.com/collector/api/v1/verify").
+        with(
+            headers: {
+                'Accept'=>'*/*',
+                'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+                'Authorization'=>'YOUR_API_KEY',
+                'Content-Type'=>'application/json',
+                'Sn-Version'=>'0.1.22',
+                'User-Agent'=>'SecureNative-ruby'
+            }).
+        to_return(status: 200, body: "", headers: {})
 
-    stub_request(:post, 'https://api.securenative-stg.com/collector/api/v1/verify')
-      .with(headers: {
-              'Accept' => '*/*',
-              'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-              'Authorization' => 'YOUR_API_KEY',
-              'Content-Type' => 'application/json',
-              'Sn-Version' => '0.1.21',
-              'User-Agent' => 'SecureNative-ruby'
-            }).to_return(status: 200, body: '', headers: {})
-    verify_result = VerifyResult.new(risk_level: RiskLevel::LOW, score: 0, triggers: nil)
 
     event_manager = EventManager.new(options)
     event_manager.start_event_persist
@@ -81,8 +80,8 @@ RSpec.describe ApiManager do
     result = api_manager.verify(event_options)
 
     expect(result).not_to be_nil
-    expect(result.risk_level).to eq(verify_result.risk_level)
-    expect(result.score).to eq(verify_result.score)
-    expect(result.triggers).to eq(verify_result.triggers)
+    expect(result.risk_level).to eq('low')
+    expect(result.score).to eq(0)
+    expect(result.triggers).to eq(nil)
   end
 end
