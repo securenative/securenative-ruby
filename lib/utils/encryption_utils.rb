@@ -1,44 +1,49 @@
 # frozen_string_literal: true
 
 require 'openssl'
+require 'digest'
+require 'base64'
 require 'models/client_token'
 
 class EncryptionUtils
-  BLOCK_SIZE = 16
-  KEY_SIZE = 32
-
-  def self.encrypt(text, cipher_key)
-    begin
-      cipher = OpenSSL::Cipher::AES.new(KEY_SIZE, :CBC).encrypt
-      cipher.padding = 0
-
-      if text.size % BLOCK_SIZE != 0
-        return nil
+  def self.padding_key(key, length)
+    if key.length == length
+      key
+    else
+      if key.length > length
+        key.slice(0, length)
+      else
+        (length - key.length).times { key << '0' }
+        key
       end
+    end
+  end
 
-      cipher_key = Digest::SHA1.hexdigest cipher_key
-      cipher.key = cipher_key.slice(0, BLOCK_SIZE)
-      s = cipher.update(text) + cipher.final
-
-      s.unpack('H*')[0].upcase
+  def self.encrypt(plain_text, secret_key)
+    begin
+      cipher = OpenSSL::Cipher.new('aes-256-cbc')
+      cipher.encrypt
+      iv = cipher.random_iv
+      cipher.key = padding_key(secret_key, 32)
+      encrypted = cipher.update(plain_text) + cipher.final
+      (iv + encrypted).unpack1('H*')
     rescue StandardError
       ''
     end
   end
 
-  def self.decrypt(encrypted, cipher_key)
+  def self.decrypt(cipher_text, secret_key)
     begin
-      cipher = OpenSSL::Cipher::AES.new(KEY_SIZE, :CBC).decrypt
-      cipher.padding = 0
+      cipher = OpenSSL::Cipher.new('aes-256-cbc')
+      cipher.decrypt
+      raw_data = [cipher_text].pack('H*')
+      cipher.iv = raw_data.slice(0, 16)
+      cipher.key = padding_key(secret_key, 32)
+      decrypted = JSON.parse(cipher.update(raw_data.slice(16, raw_data.length)) + cipher.final)
 
-      cipher_key = Digest::SHA1.hexdigest cipher_key
-      cipher.key = cipher_key.slice(0, BLOCK_SIZE)
-      s = [encrypted].pack('H*').unpack('C*').pack('c*')
-
-      rv = cipher.update(s) + cipher.final
-      rv.strip
+      return ClientToken.new(decrypted['cid'], decrypted['vid'], decrypted['fp'])
     rescue StandardError
-      ClientToken.new('', '', '')
+      ClientToken.new('', '','')
     end
   end
 end
