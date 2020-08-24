@@ -20,10 +20,6 @@ class ConfigurationBuilder
     @fail_over_strategy = fail_over_strategy
   end
 
-  def self.default_config_builder
-    ConfigurationBuilder.new
-  end
-
   def self.default_securenative_options
     SecureNativeOptions.new
   end

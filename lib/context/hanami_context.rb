@@ -1,11 +1,17 @@
 # frozen_string_literal: true
 
 class HanamiContext
+  SECURENATIVE_COOKIE = '_sn'
+
   def self.get_client_token(request)
     begin
       request.env[SECURENATIVE_COOKIE]
     rescue StandardError
-      nil
+      begin
+        request.cookies[SECURENATIVE_COOKIE]
+      rescue StandardError
+        nil
+      end
     end
   end
 
@@ -27,7 +33,8 @@ class HanamiContext
 
   def self.get_headers(request)
     begin
-      request.headers.to_hash
+      # Note: At the moment we're filtering out everything but user-agent since ruby's payload is way too big
+      { 'user-agent' => request.env['HTTP_USER_AGENT'] }
     rescue StandardError
       nil
     end

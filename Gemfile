@@ -3,7 +3,6 @@ source "https://rubygems.org"
 gemspec
 gem "rspec"
 gem "rake"
-gem "parseconfig"
 gem "simplecov", :require => false, :group => :test
 gem "codecov", :require => false, :group => :test
 gem "webmock", :require => false, :group => :test

@@ -9,4 +9,8 @@ class VerifyResult
     @score = score
     @triggers = triggers
   end
+
+  def to_s
+    "risk_level: #{@risk_level}, score: #{@score}, triggers: #{@triggers}"
+  end
 end

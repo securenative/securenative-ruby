@@ -16,15 +16,7 @@ RSpec.describe ApiManager do
   it 'tracks an event' do
     options = ConfigurationBuilder.new(api_key: 'YOUR_API_KEY', auto_send: true, interval: 10, api_url: 'https://api.securenative-stg.com/collector/api/v1')
 
-    expected = '{"eventType":"sn.user.login","userId":"USER_ID","userTraits":{' \
-                   '"name":"USER_NAME","email":"USER_EMAIL","phone":"+1234567890","createdAt":null},"request":{' \
-                   '"cid":null,"vid":null,"fp":null,"ip":"127.0.0.1","remoteIp":null,"headers":{' \
-                   '"user-agent":"Mozilla/5.0 (iPad; U; CPU OS 3_2_1 like Mac OS X; en-us) ' \
-                   'AppleWebKit/531.21.10 (KHTML, like Gecko) Mobile/7B405"},"url":null,"method":null},' \
-                   '"properties":{"prop2":true,"prop1":"CUSTOM_PARAM_VALUE","prop3":3}}'
-
-    stub_request(:post, 'https://api.securenative-stg.com/collector/api/v1/track')
-      .with(body: JSON.parse(expected)).to_return(status: 200)
+    stub_request(:post, 'https://api.securenative-stg.com/collector/api/v1/track').to_return(status: 200)
     event_manager = EventManager.new(options)
     event_manager.start_event_persist
     api_manager = ApiManager.new(event_manager, options)
@@ -33,10 +25,12 @@ RSpec.describe ApiManager do
                                      properties: { prop1: 'CUSTOM_PARAM_VALUE', prop2: true, prop3: 3 })
 
     begin
-      api_manager.track(event_options)
+      res = api_manager.track(event_options)
     ensure
       event_manager.stop_event_persist
     end
+
+    expect(res).to_not be_nil
   end
 
   it 'uses invalid options' do
@@ -63,8 +57,18 @@ RSpec.describe ApiManager do
   it 'verifies an event' do
     options = ConfigurationBuilder.new(api_key: 'YOUR_API_KEY', api_url: 'https://api.securenative-stg.com/collector/api/v1')
 
-    stub_request(:post, 'https://api.securenative-stg.com/collector/api/v1/track')
-      .with(body: { riskLevel: 'medium', score: 0.32, triggers: ['New IP', 'New City'] }).to_return(status: 200)
+    # stub_request(:post, 'https://api.securenative-stg.com/collector/api/v1/track')
+    #     .with(body: { riskLevel: 'medium', score: 0.32, triggers: ['New IP', 'New City'] }).to_return(status: 200)
+
+    stub_request(:post, 'https://api.securenative-stg.com/collector/api/v1/verify')
+      .with(headers: {
+              'Accept' => '*/*',
+              'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+              'Authorization' => 'YOUR_API_KEY',
+              'Content-Type' => 'application/json',
+              'Sn-Version' => '0.1.21',
+              'User-Agent' => 'SecureNative-ruby'
+            }).to_return(status: 200, body: '', headers: {})
     verify_result = VerifyResult.new(risk_level: RiskLevel::LOW, score: 0, triggers: nil)
 
     event_manager = EventManager.new(options)

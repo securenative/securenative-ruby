@@ -26,14 +26,13 @@ RSpec.describe EventManager do
     options = ConfigurationBuilder.new(api_key: 'YOUR_API_KEY', api_url: 'https://api.securenative-stg.com/collector/api/v1')
     event = SampleEvent.new
 
-    res_body = '{"data": true}'
-    stub_request(:any, 'http://api.securenative-stg.com:443/collector/api/v1/some-path/to-api')
+    stub_request(:post, 'https://api.securenative-stg.com/collector/api/v1/some-path/to-api')
       .with(headers: {
               'Accept' => '*/*',
               'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
               'Authorization' => 'YOUR_API_KEY',
               'Content-Type' => 'application/json',
-              'Sn-Version' => '0.1.19',
+              'Sn-Version' => '0.1.21',
               'User-Agent' => 'SecureNative-ruby'
             }).to_return(status: 200, body: '', headers: {})
     event_manager = EventManager.new(options)
@@ -49,13 +48,13 @@ RSpec.describe EventManager do
     options = ConfigurationBuilder.new(api_key: 'YOUR_API_KEY', api_url: 'https://api.securenative-stg.com/collector/api/v1')
     event = SampleEvent.new
 
-    stub_request(:any, 'http://api.securenative-stg.com:443/collector/api/v1/some-path/to-api')
+    stub_request(:post, 'https://api.securenative-stg.com/collector/api/v1/some-path/to-api')
       .with(headers: {
               'Accept' => '*/*',
               'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
               'Authorization' => 'YOUR_API_KEY',
               'Content-Type' => 'application/json',
-              'Sn-Version' => '0.1.19',
+              'Sn-Version' => '0.1.21',
               'User-Agent' => 'SecureNative-ruby'
             }).to_return(status: 401, body: '', headers: {})
 
@@ -69,13 +68,13 @@ RSpec.describe EventManager do
     options = ConfigurationBuilder.new(api_key: 'YOUR_API_KEY', api_url: 'https://api.securenative-stg.com/collector/api/v1')
     event = SampleEvent.new
 
-    stub_request(:post, 'http://api.securenative-stg.com:443/collector/api/v1/some-path/to-api')
+    stub_request(:post, 'https://api.securenative-stg.com/collector/api/v1/some-path/to-api')
       .with(headers: {
               'Accept' => '*/*',
               'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
               'Authorization' => 'YOUR_API_KEY',
               'Content-Type' => 'application/json',
-              'Sn-Version' => '0.1.19',
+              'Sn-Version' => '0.1.21',
               'User-Agent' => 'SecureNative-ruby'
             }).to_return(status: 500, body: '', headers: {})
     event_manager = EventManager.new(options)

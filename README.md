@@ -47,7 +47,7 @@ Or install it yourself as:
 To get your *API KEY*, login to your SecureNative account and go to project settings page:
 
 ### Option 1: Initialize via Config file
-SecureNative can automatically load your config from *securenative.cfg* file or from the file that is specified in your *SECURENATIVE_CONFIG_FILE* env variable:
+SecureNative can automatically load your config from *securenative.yml* file or from the file that is specified in your *SECURENATIVE_CONFIG_FILE* env variable:
 
 ```ruby
 require 'securenative'
@@ -69,7 +69,8 @@ securenative =  SecureNative.init_with_api_key('YOUR_API_KEY')
 require 'securenative'
 
 
-securenative = SecureNative.init_with_options(SecureNative.config_builder(api_key = 'API_KEY', max_event = 10, log_level = 'ERROR'))                                 
+options = ConfigurationBuilder.new(api_key: 'API_KEY', max_events: 10, log_level: 'ERROR')
+SecureNative.init_with_options(options)                                 
 ```
 
 ## Getting SecureNative instance
@@ -88,42 +89,46 @@ instance. Make sure you build event with the EventBuilder:
 
  ```ruby
 require 'securenative'
-require 'securenative/enums/event_types'
-require 'securenative/event_options_builder'
-require 'securenative/models/user_traits'
-require 'securenative/context/context_builder'
+require 'models/event_options'
+require 'enums/event_types'
+require 'models/user_traits'
 
 
-securenative = SecureNative.instance
-
-context = securenative.context_builder(ip = '127.0.0.1', client_token = 'SECURED_CLIENT_TOKEN',
-        headers = { 'user-agent' => 'Mozilla/5.0 (iPad; U; CPU OS 3_2_1 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Mobile/7B405' })
-
-event_options = EventOptions(event_type = EventTypes::LOG_IN,
-        user_id = '1234', user_traits = UserTraits('Your Name', 'name@gmail.com', '+1234567890'),
-        context = context, properties = {prop1 => 'CUSTOM_PARAM_VALUE', prop2 => true, prop3 => 3}).build
-
-securenative.track(event_options)
+def track
+    securenative = SecureNative.instance
+    context = SecureNativeContext.new(client_token: '2a980d872b939c7e4f4378aa111a5eeffb22808b58b5372f658d34904ebd5b05fff0daab91921243ac08b72442a5b3992e402dc21df16aa7cc0e19f8bffa9d6cc59996d480d70aa22b857189403675d37fd144ebaf9dc697fed149b907678f2b1f964d73b332dc8ea7df63fcfc3c11f7bbb51ba2672652ca7d5d43f36a62e15db8b13dfd794a5eccfc5968ca514dd7cce59f2df2b9d8184d076eba808c81b311', ip: '127.0.0.1',
+                                       headers: { 'user-agent' => 'Mozilla: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.3 Mozilla/5.0 (Macintosh; Intel Mac OS X x.y; rv:42.0) Gecko/20100101 Firefox/43.4' })
+    
+    event_options = EventOptions.new(event: EventTypes::LOG_IN, user_id: '1234', context: context,
+                                     user_traits: UserTraits.new(name: 'Your Name', email: 'name@gmail.com', phone: '+1234567890'),
+                                     properties: { custom_param1: 'CUSTOM_PARAM_VALUE', custom_param2: true, custom_param3: 3 })
+    
+    securenative.track(event_options)
+    
+    @message = 'tracked'
+end
  ```
 
 You can also create request context from requests:
 
 ```ruby
 require 'securenative'
-require 'securenative/enums/event_types'
-require 'securenative/event_options_builder'
-require 'securenative/models/user_traits'
+require 'models/event_options'
+require 'enums/event_types'
+require 'models/user_traits'
 
 
-def track(request)
+def track
     securenative = SecureNative.instance
-    context = SecureNative.context_builder.from_http_request(request).build
-
-    event_options = EventOptions(event_type = EventTypes::LOG_IN,
-            user_id = '1234', user_traits = UserTraits('Your Name', 'name@gmail.com', '+1234567890'),
-            context = context, properties = {prop1 => 'CUSTOM_PARAM_VALUE', prop2 => true, prop3 => 3}).build
+    context = SecureNativeContext.from_http_request(request)
+    
+    event_options = EventOptions.new(event: EventTypes::LOG_IN, user_id: '1234', context: context,
+                                     user_traits: UserTraits.new(name: 'Your Name', email: 'name@gmail.com', phone: '+1234567890'),
+                                     properties: { custom_param1: 'CUSTOM_PARAM_VALUE', custom_param2: true, custom_param3: 3 })
     
     securenative.track(event_options)
+    
+    @message = 'tracked'
 end
 ```
 
@@ -133,18 +138,18 @@ end
 
 ```ruby
 require 'securenative'
-require 'securenative/enums/event_types'
-require 'securenative/event_options_builder'
-require 'securenative/models/user_traits'
+require 'models/event_options'
+require 'enums/event_types'
+require 'models/user_traits'
 
 
 def verify(request)
     securenative = SecureNative.instance
-    context = SecureNative.context_builder.from_http_request(request).build
+    context = SecureNativeContext.from_http_request(request)
 
-    event_options = EventOptions(event_type = EventTypes::LOG_IN,
-        user_id = '1234', user_traits = UserTraits('Your Name', 'name@gmail.com', '+1234567890'),
-        context = context, properties = {prop1 => 'CUSTOM_PARAM_VALUE', prop2 => true, prop3 => 3}).build
+    event_options = EventOptions.new(event: EventTypes::LOG_IN, user_id: '1234', context: context,
+                                         user_traits: UserTraits.new(name: 'Your Name', email: 'name@gmail.com', phone: '+1234567890'),
+                                         properties: { custom_param1: 'CUSTOM_PARAM_VALUE', custom_param2: true, custom_param3: 3 })
     
     verify_result = securenative.verify(event_options)
     verify_result.risk_level  # Low, Medium, High

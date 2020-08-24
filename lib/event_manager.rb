@@ -65,7 +65,7 @@ class EventManager
     SecureNativeLogger.debug("Attempting to send event #{event}")
     res = @http_client.post(resource_path, EventManager.serialize(event).to_json)
 
-    if res.nil? || res.code != 200
+    if res.nil? || res.code != '200'
       SecureNativeLogger.info("SecureNative failed to call endpoint #{resource_path} with event #{event}. adding back to queue")
       item = QueueItem.new(resource_path, EventManager.serialize(event).to_json, retry_sending)
       @queue.append(item)
