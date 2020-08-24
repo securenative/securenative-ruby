@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'context/securenative_context'
+require 'errors/securenative_invalid_options_error'
 require 'utils/encryption_utils'
 require 'utils/date_utils'
 require 'models/request_context'
@@ -11,6 +12,14 @@ class SDKEvent
   attr_writer :context, :rid, :event_type, :user_id, :user_traits, :request, :timestamp, :properties
 
   def initialize(event_options, securenative_options)
+    if event_options.user_id.nil? || event_options.user_id.length <= 0 || event_options.user_id == ''
+      raise SecureNativeInvalidOptionsError.new, 'Invalid event structure; User Id is missing'
+    end
+
+    if event_options.event.nil? || event_options.event.length <= 0 || event_options.event == ''
+      raise SecureNativeInvalidOptionsError.new, 'Invalid event structure; Event Type is missing'
+    end
+
     @context = if !event_options.context.nil?
                  event_options.context
                else
