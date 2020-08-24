@@ -96,7 +96,7 @@ require 'models/user_traits'
 
 def track
     securenative = SecureNative.instance
-    context = SecureNativeContext.new(client_token: '2a980d872b939c7e4f4378aa111a5eeffb22808b58b5372f658d34904ebd5b05fff0daab91921243ac08b72442a5b3992e402dc21df16aa7cc0e19f8bffa9d6cc59996d480d70aa22b857189403675d37fd144ebaf9dc697fed149b907678f2b1f964d73b332dc8ea7df63fcfc3c11f7bbb51ba2672652ca7d5d43f36a62e15db8b13dfd794a5eccfc5968ca514dd7cce59f2df2b9d8184d076eba808c81b311', ip: '127.0.0.1',
+    context = SecureNativeContext.new(client_token: 'SECURED_CLIENT_TOKEN', ip: '127.0.0.1',
                                        headers: { 'user-agent' => 'Mozilla: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.3 Mozilla/5.0 (Macintosh; Intel Mac OS X x.y; rv:42.0) Gecko/20100101 Firefox/43.4' })
     
     event_options = EventOptions.new(event: EventTypes::LOG_IN, user_id: '1234', context: context,
@@ -118,7 +118,7 @@ require 'enums/event_types'
 require 'models/user_traits'
 
 
-def track
+def track(request)
     securenative = SecureNative.instance
     context = SecureNativeContext.from_http_request(request)
     
