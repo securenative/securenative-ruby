@@ -33,7 +33,7 @@ RSpec.describe EventManager do
                 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
                 'Authorization'=>'YOUR_API_KEY',
                 'Content-Type'=>'application/json',
-                'Sn-Version'=>'0.1.22',
+                'Sn-Version'=>'0.1.23',
                 'User-Agent'=>'SecureNative-ruby'
             }).
         to_return(status: 200, body: "", headers: {})
@@ -58,7 +58,7 @@ RSpec.describe EventManager do
                 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
                 'Authorization'=>'YOUR_API_KEY',
                 'Content-Type'=>'application/json',
-                'Sn-Version'=>'0.1.22',
+                'Sn-Version'=>'0.1.23',
                 'User-Agent'=>'SecureNative-ruby'
             }).
         to_return(status: 401, body: "", headers: {})
@@ -80,7 +80,7 @@ RSpec.describe EventManager do
                 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
                 'Authorization'=>'YOUR_API_KEY',
                 'Content-Type'=>'application/json',
-                'Sn-Version'=>'0.1.22',
+                'Sn-Version'=>'0.1.23',
                 'User-Agent'=>'SecureNative-ruby'
             }).
         to_return(status: 500, body: "", headers: {})

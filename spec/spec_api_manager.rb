@@ -64,11 +64,9 @@ RSpec.describe ApiManager do
                 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
                 'Authorization'=>'YOUR_API_KEY',
                 'Content-Type'=>'application/json',
-                'Sn-Version'=>'0.1.22',
+                'Sn-Version'=>'0.1.23',
                 'User-Agent'=>'SecureNative-ruby'
-            }).
-        to_return(status: 200, body: "", headers: {})
-
+            }).to_return(status: 200, body: "", headers: {})
 
     event_manager = EventManager.new(options)
     event_manager.start_event_persist
