@@ -8,7 +8,7 @@ class SecureNativeOptions
 
   def initialize(api_key: nil, api_url: "https://api.securenative.com/collector/api/v1", interval: 1000,
                  max_events: 1000, timeout: 1500, auto_send: true, disable: false, log_level: "FATAL",
-                 fail_over_strategy: FailOverStrategy::FAIL_OPEN, proxy_headers: [])
+                 fail_over_strategy: FailOverStrategy::FAIL_OPEN, proxy_headers: nil)
     @api_key = api_key
     @api_url = api_url
     @interval = interval
