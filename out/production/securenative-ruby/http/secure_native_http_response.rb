@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class HttpResponse
+class SecureNativeHttpResponse
   attr_reader :ok, :status_code, :body
   attr_writer :ok, :status_code, :body
 

@@ -4,6 +4,7 @@ require 'utils/secure_native_logger'
 require 'config/securenative_options'
 require 'http/securenative_http_client'
 require 'errors/securenative_sdk_error'
+require 'errors/securenative_http_error'
 
 class QueueItem
   attr_reader :url, :body, :retry_sending
@@ -36,7 +37,7 @@ class EventManager
     @attempt = 0
     @coefficients = [1, 1, 2, 3, 5, 8, 13]
 
-    @thread = Thread.new {run}
+    @thread = Thread.new { run }
   end
 
   def send_async(event, resource_path)
@@ -45,7 +46,7 @@ class EventManager
       return
     end
 
-    item = QueueItem(resource_path, JSON.parse(EventManager.serialize(event)), false)
+    item = QueueItem.new(resource_path, EventManager.serialize(event).to_json, false)
     @queue.append(item)
   end
 
@@ -62,11 +63,11 @@ class EventManager
     end
 
     SecureNativeLogger.debug("Attempting to send event #{event}")
-    res = @http_client.post(resource_path, JSON.parse(EventManager.serialize(event)))
+    res = @http_client.post(resource_path, EventManager.serialize(event).to_json)
 
-    if res.status_code != 200
-      SecureNativeLogger.info('SecureNative failed to call endpoint {} with event {}. adding back to queue'.format(resource_path, event))
-      item = QueueItem(resource_path, JSON.parse(EventManager.serialize(event)), retry_sending)
+    if res.nil? || res.code != '200'
+      SecureNativeLogger.info("SecureNative failed to call endpoint #{resource_path} with event #{event}. adding back to queue")
+      item = QueueItem.new(resource_path, EventManager.serialize(event).to_json, retry_sending)
       @queue.append(item)
     end
 
@@ -81,20 +82,20 @@ class EventManager
         @queue.each do |item|
           begin
             res = @http_client.post(item.url, item.body)
-            if res.status_code == 401
+            if res.code == '401'
               item.retry_sending = false
-            elsif res.status_code != 200
+            elsif res.code != '200'
               raise SecureNativeHttpError, res.status_code
             end
-            SecureNativeLogger.debug('Event successfully sent; {}'.format(item.body))
+            SecureNativeLogger.debug("Event successfully sent; #{item.body}")
             return res
           rescue StandardError => e
-            SecureNativeLogger.error('Failed to send event; {}'.format(e))
+            SecureNativeLogger.error("Failed to send event; #{e}")
             if item.retry_sending
               @attempt = 0 if @coefficients.length == @attempt + 1
 
               back_off = @coefficients[@attempt] * @options.interval
-              SecureNativeLogger.debug('Automatic back-off of {}'.format(back_off))
+              SecureNativeLogger.debug("Automatic back-off of #{back_off}")
               @send_enabled = false
               sleep back_off
               @send_enabled = true
@@ -120,10 +121,10 @@ class EventManager
       SecureNativeLogger.debug('Attempting to stop automatic event persistence')
       begin
         flush
-        @thread&.stop
+        @thread&.stop?
         SecureNativeLogger.debug('Stopped event persistence')
       rescue StandardError => e
-        SecureNativeLogger.error('Could not stop event scheduler; {}'.format(e))
+        SecureNativeLogger.error("Could not stop event scheduler; #{e}")
       end
     end
   end
@@ -145,7 +146,7 @@ class EventManager
         fp: obj.request.fp,
         ip: obj.request.ip,
         remoteIp: obj.request.remote_ip,
-        http_method: obj.request.http_method,
+        method: obj.request.http_method || '',
         url: obj.request.url,
         headers: obj.request.headers
       },

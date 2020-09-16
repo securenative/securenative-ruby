@@ -9,15 +9,23 @@ RSpec.describe SecureNativeHttpClient do
   it 'makes a simple post call' do
     options = ConfigurationBuilder.new(api_key: 'YOUR_API_KEY', api_url: 'https://api.securenative-stg.com/collector/api/v1')
 
-    stub_request(:post, 'https://api.securenative-stg.com/collector/api/v1/track')
-      .with(body: { event: 'SOME_EVENT_NAME' }).to_return(status: 200)
+    stub_request(:post, "https://api.securenative-stg.com/collector/api/v1/track").
+        with(
+            body: "{\"event\": \"SOME_EVENT_NAME\"}",
+            headers: {
+                'Accept'=>'*/*',
+                'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+                'Authorization'=>'YOUR_API_KEY',
+                'Content-Type'=>'application/json',
+                'Sn-Version'=>'0.1.22',
+                'User-Agent'=>'SecureNative-ruby'
+            }).
+        to_return(status: 200, body: "", headers: {})
     client = SecureNativeHttpClient.new(options)
     payload = '{"event": "SOME_EVENT_NAME"}'
 
     res = client.post('track', payload)
 
-    expect(res.ok).to eq(true)
-    expect(res.status_code).to eq(200)
-    expect(res.text).to eq(payload)
+    expect(res.code).to eq('200')
   end
 end

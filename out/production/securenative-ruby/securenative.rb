@@ -8,7 +8,9 @@ require 'errors/securenative_sdk_Illegal_state_error'
 require 'errors/securenative_config_error'
 require 'enums/failover_strategy'
 require 'config/configuration_builder'
+require 'config/configuration_manager'
 require 'event_manager'
+require 'api_manager'
 
 class SecureNative
   attr_reader :options
@@ -58,16 +60,6 @@ class SecureNative
     raise SecureNativeSDKIllegalStateError if @securenative.nil?
 
     @securenative
-  end
-
-  def self.config_builder(api_key = nil, api_url = 'https://api.securenative.com/collector/api/v1', interval = 1000,
-                          max_events = 1000, timeout = 1500, auto_send = true, disable = false, log_level = 'FATAL',
-                          fail_over_strategy = FailOverStrategy::FAIL_OPEN)
-    ConfigurationBuilder.new(api_key, api_url, interval, max_events, timeout, auto_send, disable, log_level, fail_over_strategy)
-  end
-
-  def self.context_builder(client_token = nil, ip = nil, remote_ip = nil, headers = nil, url = nil, method = nil, body = nil)
-    ContextBuilder.new(client_token, ip, remote_ip, headers, url, method, body)
   end
 
   def track(event_options)

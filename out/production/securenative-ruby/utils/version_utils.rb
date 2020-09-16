@@ -2,11 +2,10 @@
 
 class VersionUtils
   def self.version
-    path = 'VERSION'
-    file = File.open(path)
-    version = file.read
-    file.close
-
-    version
+    begin
+      Gem.loaded_specs['securenative'].version.to_s
+    rescue StandardError
+      'unknown'
+    end
   end
 end

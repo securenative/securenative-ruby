@@ -50,6 +50,7 @@ class ConfigurationManager
                              auto_send: _get_env_or_default(properties, 'SECURENATIVE_AUTO_SEND', options.auto_send),
                              disable: _get_env_or_default(properties, 'SECURENATIVE_DISABLE', options.disable),
                              log_level: _get_env_or_default(properties, 'SECURENATIVE_LOG_LEVEL', options.log_level),
-                             fail_over_strategy: _get_env_or_default(properties, 'SECURENATIVE_FAILOVER_STRATEGY', options.fail_over_strategy))
+                             fail_over_strategy: _get_env_or_default(properties, 'SECURENATIVE_FAILOVER_STRATEGY', options.fail_over_strategy),
+                             proxy_headers: _get_env_or_default(properties, 'SECURENATIVE_PROXY_HEADERS', options.proxy_headers))
   end
 end
