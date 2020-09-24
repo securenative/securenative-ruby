@@ -16,7 +16,7 @@ RSpec.describe SecureNative::SecureNativeHttpClient do
               'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
               'Authorization' => 'YOUR_API_KEY',
               'Content-Type' => 'application/json',
-              'Sn-Version' => '0.1.25',
+              'Sn-Version' => '0.1.26',
               'User-Agent' => 'SecureNative-ruby'
             }).to_return(status: 200, body: '', headers: {})
 
