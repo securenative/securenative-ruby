@@ -22,7 +22,7 @@ RSpec.describe SecureNative::SecureNative do
 
   it 'inits sdk with api key and defaults' do
     SecureNative::SecureNative._flush
-    api_key = 'API_KEY'
+    api_key = "API_KEY"
     securenative = SecureNative::SecureNative.init_with_api_key(api_key)
     options = securenative.options
 
