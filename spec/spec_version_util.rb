@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require 'utils/version_utils'
+require 'securenative/utils/version_utils'
 require 'rspec'
 
-RSpec.describe VersionUtils do
+RSpec.describe SecureNative::VersionUtils do
   it 'checks that parsing version is valid' do
-    expect(VersionUtils.version).not_to eq('unknown')
+    expect(SecureNative::VersionUtils.version).not_to eq('unknown')
   end
 end

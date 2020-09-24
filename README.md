@@ -50,36 +50,36 @@ To get your *API KEY*, login to your SecureNative account and go to project sett
 SecureNative can automatically load your config from *securenative.yml* file or from the file that is specified in your *SECURENATIVE_CONFIG_FILE* env variable:
 
 ```ruby
-require 'securenative'
+require 'securenative/securenative'
 
 
-secureative =  SecureNative.init
+secureative =  SecureNative::SecureNative.init
 ```
 ### Option 2: Initialize via API Key
 
 ```ruby
-require 'securenative'
+require 'securenative/sdk'
 
 
-securenative =  SecureNative.init_with_api_key('YOUR_API_KEY')
+securenative =  SecureNative::SecureNative.init_with_api_key('YOUR_API_KEY')
 ```
 
 ### Option 3: Initialize via ConfigurationBuilder
 ```ruby
-require 'securenative'
+require 'securenative/sdk'
 
 
-options = ConfigurationBuilder.new(api_key: 'API_KEY', max_events: 10, log_level: 'ERROR')
-SecureNative.init_with_options(options)                                 
+options = SecureNative::ConfigurationBuilder.new(api_key: 'API_KEY', max_events: 10, log_level: 'ERROR')
+SecureNative::SecureNative.init_with_options(options)                                 
 ```
 
 ## Getting SecureNative instance
 Once initialized, sdk will create a singleton instance which you can get: 
 ```ruby
-require 'securenative'
+require 'securenative/sdk'
 
 
-secureNative = SecureNative.instance
+secureNative = SecureNative::SecureNative.instance
 ```
 
 ## Tracking events
@@ -88,19 +88,19 @@ Once the SDK has been initialized, tracking requests sent through the SDK
 instance. Make sure you build event with the EventBuilder:
 
  ```ruby
-require 'securenative'
-require 'models/event_options'
-require 'enums/event_types'
-require 'models/user_traits'
+require 'securenative/sdk'
+require 'securenative/models/event_options'
+require 'securenative/enums/event_types'
+require 'securenative/models/user_traits'
 
 
 def track
-    securenative = SecureNative.instance
-    context = SecureNativeContext.new(client_token: 'SECURED_CLIENT_TOKEN', ip: '127.0.0.1',
+    securenative = SecureNative::SecureNative.instance
+    context = SecureNative::SecureNativeContext.new(client_token: 'SECURED_CLIENT_TOKEN', ip: '127.0.0.1',
                                        headers: { 'user-agent' => 'Mozilla: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.3 Mozilla/5.0 (Macintosh; Intel Mac OS X x.y; rv:42.0) Gecko/20100101 Firefox/43.4' })
     
-    event_options = EventOptions.new(event: EventTypes::LOG_IN, user_id: '1234', context: context,
-                                     user_traits: UserTraits.new(name: 'Your Name', email: 'name@gmail.com', phone: '+1234567890'),
+    event_options = SecureNative::EventOptions.new(event: SecureNative::EventTypes::LOG_IN, user_id: '1234', context: context,
+                                     user_traits: SecureNative::UserTraits.new(name: 'Your Name', email: 'name@gmail.com', phone: '+1234567890'),
                                      properties: { custom_param1: 'CUSTOM_PARAM_VALUE', custom_param2: true, custom_param3: 3 })
     
     securenative.track(event_options)
@@ -109,21 +109,21 @@ def track
 end
  ```
 
-You can also create request context from requests:
+You can also create request securenative.context from requests:
 
 ```ruby
-require 'securenative'
-require 'models/event_options'
-require 'enums/event_types'
-require 'models/user_traits'
+require 'securenative/sdk'
+require 'securenative/models/event_options'
+require 'securenative/enums/event_types'
+require 'securenative/models/user_traits'
 
 
 def track(request)
-    securenative = SecureNative.instance
-    context = SecureNativeContext.from_http_request(request)
+    securenative = SecureNative::SecureNative.instance
+    context = SecureNative::SecureNativeContext.from_http_request(request)
     
-    event_options = EventOptions.new(event: EventTypes::LOG_IN, user_id: '1234', context: context,
-                                     user_traits: UserTraits.new(name: 'Your Name', email: 'name@gmail.com', phone: '+1234567890'),
+    event_options = SecureNative::EventOptions.new(event: SecureNative::EventTypes::LOG_IN, user_id: '1234', context: context,
+                                     user_traits: SecureNative::UserTraits.new(name: 'Your Name', email: 'name@gmail.com', phone: '+1234567890'),
                                      properties: { custom_param1: 'CUSTOM_PARAM_VALUE', custom_param2: true, custom_param3: 3 })
     
     securenative.track(event_options)
@@ -137,18 +137,18 @@ end
 **Example**
 
 ```ruby
-require 'securenative'
-require 'models/event_options'
-require 'enums/event_types'
-require 'models/user_traits'
+require 'securenative/sdk'
+require 'securenative/models/event_options'
+require 'securenative/enums/event_types'
+require 'securenative/models/user_traits'
 
 
 def verify(request)
-    securenative = SecureNative.instance
-    context = SecureNativeContext.from_http_request(request)
+    securenative = SecureNative::SecureNative.instance
+    context = SecureNative::SecureNativeContext.from_http_request(request)
 
-    event_options = EventOptions.new(event: EventTypes::LOG_IN, user_id: '1234', context: context,
-                                         user_traits: UserTraits.new(name: 'Your Name', email: 'name@gmail.com', phone: '+1234567890'),
+    event_options = SecureNative::EventOptions.new(event: SecureNative::EventTypes::LOG_IN, user_id: '1234', context: context,
+                                         user_traits: SecureNative::UserTraits.new(name: 'Your Name', email: 'name@gmail.com', phone: '+1234567890'),
                                          properties: { custom_param1: 'CUSTOM_PARAM_VALUE', custom_param2: true, custom_param3: 3 })
     
     verify_result = securenative.verify(event_options)
@@ -163,11 +163,11 @@ end
 Apply our filter to verify the request is from us, for example:
 
 ```ruby
-require 'securenative'
+require 'securenative/sdk'
 
 
 def webhook_endpoint(request)
-    securenative = SecureNative.instance
+    securenative = SecureNative::SecureNative.instance
     
     # Checks if request is verified
     is_verified = securenative.verify_request_payload(request)
