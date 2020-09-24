@@ -6,7 +6,7 @@ require_relative 'lib/securenative/utils/version_utils'
 
 Gem::Specification.new do |spec|
   spec.name          = 'securenative'
-  spec.version       = '0.1.24'
+  spec.version       = '0.1.26'
   spec.authors       = ['SecureNative']
   spec.email         = ['support@securenative.com']
 
