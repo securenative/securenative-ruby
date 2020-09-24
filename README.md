@@ -173,3 +173,26 @@ def webhook_endpoint(request)
     is_verified = securenative.verify_request_payload(request)
 end
  ```
+
+## Extract proxy headers from Cloudflare
+
+You can specify custom header keys to allow extraction of client ip from different providers.
+This example demonstrates the usage of proxy headers for ip extraction from Cloudflare.
+
+### Option 1: Using config file
+```yaml
+SECURENATIVE_API_KEY: dsbe27fh3437r2yd326fg3fdg36f43
+SECURENATIVE_PROXY_HEADERS: ["CF-Connecting-IP"]
+```
+
+Initialize sdk as showed above.
+
+### Options 2: Using ConfigurationBuilder
+
+```ruby
+require 'securenative/sdk'
+
+options = SecureNative::SecureNativeOptions.new(api_key: 'API_KEY', max_events: 10, log_level: 'ERROR', proxy_headers: ['CF-Connecting-IP'])
+
+SecureNative::SecureNative.init_with_options(options)
+``` 

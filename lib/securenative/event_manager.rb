@@ -78,19 +78,17 @@ module SecureNative
     def run
       loop do
         @semaphore.synchronize do
-          next unless !@queue.empty? && @send_enabled
-
-          @queue.each do |item|
+          if (item = !@queue.empty? && @send_enabled)
             begin
+              item = @queue.shift
               res = @http_client.post(item.url, item.body)
-              if res.code == '401'
+              if res.code == "401"
                 item.retry_sending = false
-              elsif res.code != '200'
-                raise SecureNativeHttpError, res.status_code
+              elsif res.code != "200"
+                @queue.append(item)
               end
               SecureNativeLogger.debug("Event successfully sent; #{item.body}")
-              return res
-            rescue StandardError => e
+            rescue Exception => e
               SecureNativeLogger.error("Failed to send event; #{e}")
               if item.retry_sending
                 @attempt = 0 if @coefficients.length == @attempt + 1
@@ -104,7 +102,7 @@ module SecureNative
             end
           end
         end
-        sleep @interval / 1000
+        sleep @interval / 1000 if @queue.empty?
       end
     end
 
