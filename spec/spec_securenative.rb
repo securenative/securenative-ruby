@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'securenative/securenative'
+require 'securenative/sdk'
 require 'securenative/config/configuration_manager'
 require 'securenative/errors/securenative_sdk_error'
 require 'securenative/errors/securenative_sdk_Illegal_state_error'
