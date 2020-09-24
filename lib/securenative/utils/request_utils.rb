@@ -15,9 +15,19 @@ module SecureNative
     end
 
     def self.get_client_ip_from_request(request, options = nil)
-      begin
-        return request.ip unless request.ip.nil?
-      rescue NoMethodError
+      unless options.nil?
+        for header in options.proxy_headers do
+          begin
+            h = request.env[header]
+            return h.scan(/\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b/)[0] unless h.nil?
+          rescue NoMethodError
+            begin
+              h = request[header]
+              return h.scan(/\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b/)[0] unless h.nil?
+            rescue NoMethodError
+            end
+          end
+        end
       end
 
       begin
@@ -26,6 +36,17 @@ module SecureNative
       rescue NoMethodError
         begin
           x_forwarded_for = request['HTTP_X_FORWARDED_FOR']
+          return x_forwarded_for.scan(/\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b/)[0] unless x_forwarded_for.nil?
+        rescue NoMethodError
+        end
+      end
+
+      begin
+        x_forwarded_for = request.env['HTTP_X_REAL_IP']
+        return x_forwarded_for.scan(/\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b/)[0] unless x_forwarded_for.nil?
+      rescue NoMethodError
+        begin
+          x_forwarded_for = request['HTTP_X_REAL_IP']
           return x_forwarded_for.scan(/\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b/)[0] unless x_forwarded_for.nil?
         rescue NoMethodError
         end
@@ -42,19 +63,9 @@ module SecureNative
         end
       end
 
-      unless options.nil?
-        for header in options.proxy_headers do
-          begin
-            h = request.env[header]
-            return h.scan(/\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b/)[0] unless h.nil?
-          rescue NoMethodError
-            begin
-              h = request[header]
-              return h.scan(/\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b/)[0] unless h.nil?
-            rescue NoMethodError
-            end
-          end
-        end
+      begin
+        return request.ip unless request.ip.nil?
+      rescue NoMethodError
       end
 
       ''
