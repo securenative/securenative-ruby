@@ -132,27 +132,27 @@ class EventManager
 
   def self.serialize(obj)
     {
-        rid: obj.rid,
-        eventType: obj.event_type,
-        userId: obj.user_id,
-        userTraits: {
-            name: obj.user_traits.name,
-            email: obj.user_traits.email,
-            phone: obj.user_traits.phone,
-            createdAt: obj.user_traits.created_at
-        },
-        request: {
-            cid: obj.request.cid,
-            vid: obj.request.vid,
-            fp: obj.request.fp,
-            ip: obj.request.ip,
-            remoteIp: obj.request.remote_ip,
-            method: obj.request.http_method || '',
-            url: obj.request.url,
-            headers: obj.request.headers
-        },
-        timestamp: obj.timestamp,
-        properties: obj.properties
+      rid: obj.rid,
+      eventType: obj.event_type,
+      userId: obj.user_id,
+      userTraits: {
+        name: obj.user_traits.name,
+        email: obj.user_traits.email,
+        phone: obj.user_traits.phone,
+        createdAt: obj.user_traits.created_at
+      },
+      request: {
+        cid: obj.request.cid,
+        vid: obj.request.vid,
+        fp: obj.request.fp,
+        ip: obj.request.ip,
+        remoteIp: obj.request.remote_ip,
+        method: obj.request.http_method || '',
+        url: obj.request.url,
+        headers: obj.request.headers
+      },
+      timestamp: obj.timestamp,
+      properties: obj.properties
     }
   end
 end
