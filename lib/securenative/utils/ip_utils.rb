@@ -1,25 +1,21 @@
 # frozen_string_literal: true
 
-require "resolv"
+class IpUtils
+  def self.ip_address?(ip_address)
+    return true if ip_address =~ Resolv::IPv4::Regex
+    return true if ip_address =~ Resolv::IPv6::Regex
 
-module SecureNative
-  class IpUtils
-    def self.ip_address?(ip_address)
-      return true if ip_address =~ Resolv::IPv4::Regex
-      return true if ip_address =~ Resolv::IPv6::Regex
+    false
+  end
 
-      false
-    end
+  def self.valid_public_ip?(ip_address)
+    ip = IPAddr.new(ip_address)
+    return false if ip.loopback? || ip.private? || ip.link_local? || ip.untrusted? || ip.tainted?
 
-    def self.valid_public_ip?(ip_address)
-      ip = IPAddr.new(ip_address)
-      return false if ip.loopback? || ip.private? || ip.link_local? || ip.untrusted? || ip.tainted?
+    true
+  end
 
-      true
-    end
-
-    def self.loop_back?(ip_address)
-      IPAddr.new(ip_address).loopback?
-    end
+  def self.loop_back?(ip_address)
+    IPAddr.new(ip_address).loopback?
   end
 end

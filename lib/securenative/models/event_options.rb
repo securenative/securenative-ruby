@@ -1,9 +1,5 @@
 # frozen_string_literal: true
 
-require 'securenative/models/event_options'
-require 'securenative/models/user_traits'
-require 'securenative/errors/securenative_invalid_options_error'
-
 module SecureNative
   class EventOptions
     attr_reader :event, :user_id, :user_traits, :context, :properties, :timestamp
@@ -18,11 +14,11 @@ module SecureNative
 
       if user_traits.nil?
         if user_name && email && phone && created_at
-          user_traits = UserTraits(user_name, email, phone, created_at)
+          user_traits = SecureNative::UserTraits(user_name, email, phone, created_at)
         elsif user_name && email && phone
-          user_traits = UserTraits(user_name, email, phone)
+          user_traits = SecureNative::UserTraits(user_name, email, phone)
         elsif user_name && email
-          user_traits = UserTraits(user_name, email)
+          user_traits = SecureNative::UserTraits(user_name, email)
         else
           user_traits = UserTraits.new
         end

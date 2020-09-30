@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
-require 'securenative/enums/failover_strategy'
-
 module SecureNative
-  class SecureNativeOptions
+  class Options
     attr_reader :api_key, :api_url, :interval, :max_events, :timeout, :auto_send, :disable, :log_level, :fail_over_strategy, :proxy_headers
     attr_writer :api_key, :api_url, :interval, :max_events, :timeout, :auto_send, :disable, :log_level, :fail_over_strategy, :proxy_headers
 

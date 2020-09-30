@@ -1,13 +1,12 @@
 # frozen_string_literal: true
 
-require 'securenative/config/securenative_options'
-require 'securenative/utils/request_utils'
+require 'securenative'
 require 'webmock/rspec'
 require 'rspec'
 
-RSpec.describe SecureNative::RequestUtils do
+RSpec.describe RequestUtils do
   it 'extract a request with proxy headers' do
-    options = SecureNative::SecureNativeOptions.new
+    options = SecureNative::Options.new
     options.proxy_headers = [
       'CF-Connecting-IP'
     ]
@@ -20,7 +19,7 @@ RSpec.describe SecureNative::RequestUtils do
             }).to_return(status: 200, body: '', headers: { 'CF-Connecting-IP' => 'CF-Connecting-IP: 203.0.113.1' })
 
     request = Net::HTTP.get_response('www.example.com', '/')
-    client_ip = SecureNative::RequestUtils.get_client_ip_from_request(request, options)
+    client_ip = RequestUtils.get_client_ip_from_request(request, options)
 
     expect(client_ip).to eq('203.0.113.1')
   end

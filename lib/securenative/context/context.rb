@@ -1,13 +1,7 @@
 # frozen_string_literal: true
 
-require 'securenative/utils/request_utils'
-require 'securenative/utils/utils'
-require 'securenative/context/rails_context'
-require 'securenative/context/hanami_context'
-require 'securenative/context/sinatra_context'
-
 module SecureNative
-  class SecureNativeContext
+  class Context
     attr_reader :client_token, :ip, :remote_ip, :headers, :url, :http_method, :body
     attr_writer :client_token, :ip, :remote_ip, :headers, :url, :http_method, :body
 
@@ -24,7 +18,7 @@ module SecureNative
     end
 
     def self.default_context_builder
-      SecureNativeContext.new
+      Context.new
     end
 
     def self.from_http_request(request)
@@ -61,9 +55,9 @@ module SecureNative
 
       client_token = RequestUtils.get_secure_header_from_request(headers) if Utils.null_or_empty?(client_token)
 
-      SecureNativeContext.new(client_token: client_token, ip: RequestUtils.get_client_ip_from_request(request),
-                              remote_ip: RequestUtils.get_remote_ip_from_request(request),
-                              headers: headers, url: url, http_method: method || '', body: body)
+      Context.new(client_token: client_token, ip: RequestUtils.get_client_ip_from_request(request),
+                  remote_ip: RequestUtils.get_remote_ip_from_request(request),
+                  headers: headers, url: url, http_method: method || '', body: body)
     end
   end
 end

@@ -1,13 +1,7 @@
 # frozen_string_literal: true
 
-require 'net/http'
-require 'uri'
-require 'json'
-require 'securenative/utils/version_utils'
-require 'securenative/utils/secure_native_logger'
-
 module SecureNative
-  class SecureNativeHttpClient
+  class HttpClient
     AUTHORIZATION_HEADER = 'Authorization'
     VERSION_HEADER = 'SN-Version'
     USER_AGENT_HEADER = 'User-Agent'
@@ -43,7 +37,7 @@ module SecureNative
       begin
         res = client.request(request)
       rescue StandardError => e
-        SecureNativeLogger.error("Failed to send request; #{e}")
+        SecureNative::Log.error("Failed to send request; #{e}")
         return res
       end
       res

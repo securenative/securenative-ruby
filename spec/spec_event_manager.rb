@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
-require 'securenative/event_manager'
-require 'securenative/config/configuration_builder'
-require 'securenative/models/user_traits'
-require 'securenative/models/request_context'
+require 'securenative'
 require 'rspec'
 require 'webmock/rspec'
 
@@ -21,9 +18,9 @@ class SampleEvent
   end
 end
 
-RSpec.describe SecureNative::EventManager do
+RSpec.describe EventManager do
   it 'successfully sends sync event with status code 200' do
-    options = SecureNative::ConfigurationBuilder.new(api_key: 'YOUR_API_KEY', api_url: 'https://api.securenative-stg.com/collector/api/v1')
+    options = ConfigurationBuilder.new(api_key: 'YOUR_API_KEY', api_url: 'https://api.securenative-stg.com/collector/api/v1')
     event = SampleEvent.new
 
     stub_request(:post, 'https://api.securenative-stg.com/collector/api/v1/some-path/to-api')
@@ -32,12 +29,12 @@ RSpec.describe SecureNative::EventManager do
               'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
               'Authorization' => 'YOUR_API_KEY',
               'Content-Type' => 'application/json',
-              'Sn-Version' => '0.1.28',
+              'Sn-Version' => '0.1.29',
               'User-Agent' => 'SecureNative-ruby'
             })
       .to_return(status: 200, body: '', headers: {})
 
-    event_manager = SecureNative::EventManager.new(options)
+    event_manager = EventManager.new(options)
 
     event_manager.start_event_persist
     res = event_manager.send_sync(event, 'some-path/to-api', false)
@@ -47,7 +44,7 @@ RSpec.describe SecureNative::EventManager do
   end
 
   it 'fails when send sync event status code is 401' do
-    options = SecureNative::ConfigurationBuilder.new(api_key: 'YOUR_API_KEY', api_url: 'https://api.securenative-stg.com/collector/api/v1')
+    options = ConfigurationBuilder.new(api_key: 'YOUR_API_KEY', api_url: 'https://api.securenative-stg.com/collector/api/v1')
     event = SampleEvent.new
 
     stub_request(:post, 'https://api.securenative-stg.com/collector/api/v1/some-path/to-api')
@@ -56,19 +53,19 @@ RSpec.describe SecureNative::EventManager do
               'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
               'Authorization' => 'YOUR_API_KEY',
               'Content-Type' => 'application/json',
-              'Sn-Version' => '0.1.28',
+              'Sn-Version' => '0.1.29',
               'User-Agent' => 'SecureNative-ruby'
             })
       .to_return(status: 401, body: '', headers: {})
 
-    event_manager = SecureNative::EventManager.new(options)
+    event_manager = EventManager.new(options)
     res = event_manager.send_sync(event, 'some-path/to-api', false)
 
     expect(res.code).to eq('401')
   end
 
   it 'fails when send sync event status code is 500' do
-    options = SecureNative::ConfigurationBuilder.new(api_key: 'YOUR_API_KEY', api_url: 'https://api.securenative-stg.com/collector/api/v1')
+    options = ConfigurationBuilder.new(api_key: 'YOUR_API_KEY', api_url: 'https://api.securenative-stg.com/collector/api/v1')
     event = SampleEvent.new
 
     stub_request(:post, 'https://api.securenative-stg.com/collector/api/v1/some-path/to-api')
@@ -77,12 +74,12 @@ RSpec.describe SecureNative::EventManager do
               'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
               'Authorization' => 'YOUR_API_KEY',
               'Content-Type' => 'application/json',
-              'Sn-Version' => '0.1.28',
+              'Sn-Version' => '0.1.29',
               'User-Agent' => 'SecureNative-ruby'
             })
       .to_return(status: 500, body: '', headers: {})
 
-    event_manager = SecureNative::EventManager.new(options)
+    event_manager = EventManager.new(options)
     res = event_manager.send_sync(event, 'some-path/to-api', false)
 
     expect(res.code).to eq('500')

@@ -3,7 +3,7 @@
 require 'logger'
 
 module SecureNative
-  class SecureNativeLogger
+  class Log
     @logger = Logger.new(STDOUT)
 
     def self.init_logger(level = 'DEBUG')

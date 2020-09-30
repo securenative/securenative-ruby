@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require 'securenative/utils/encryption_utils'
+require 'securenative'
 require 'rspec'
 
-RSpec.describe SecureNative::EncryptionUtils do
+RSpec.describe EncryptionUtils do
   it 'encrypts' do
     secret_key = 'AFD16D89150FD7FB19EE9E936DC1AE3547CE119B'
     payload = '{"cid":"198a41ff-a10f-4cda-a2f3-a9ca80c0703b","vi":"148a42ff-b40f-4cda-a2f3-a8ca80c0703b","fp":"6d8cabd95987f8318b1fe01593d5c2a5.24700f9f1986800ab4fcc880530dd0ed"}'
-    result = SecureNative::EncryptionUtils.encrypt(payload, secret_key)
+    result = EncryptionUtils.encrypt(payload, secret_key)
 
     expect(result).not_to be_nil
   end
@@ -18,7 +18,7 @@ RSpec.describe SecureNative::EncryptionUtils do
     cid = '12946065-65af-4825-9893-fce901c8da49'
     fp = '9a6e6a7d636ca772924bd2219853d73c.24700f9f1986800ab4fcc880530dd0ed'
 
-    result = SecureNative::EncryptionUtils.decrypt(encrypted_payload, secret_key)
+    result = EncryptionUtils.decrypt(encrypted_payload, secret_key)
 
     expect(result.cid).to eq(cid)
     expect(result.fp).to eq(fp)

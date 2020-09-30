@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module SecureNative
-  class SecureNativeHttpResponse
+  class HttpResponse
     attr_reader :ok, :status_code, :body
     attr_writer :ok, :status_code, :body
 

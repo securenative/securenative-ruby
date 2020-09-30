@@ -1,12 +1,5 @@
 # frozen_string_literal: true
 
-require 'securenative/context/securenative_context'
-require 'securenative/errors/securenative_invalid_options_error'
-require 'securenative/utils/encryption_utils'
-require 'securenative/utils/date_utils'
-require 'securenative/models/request_context'
-require 'securerandom'
-
 module SecureNative
   class SDKEvent
     attr_reader :context, :rid, :event_type, :user_id, :user_traits, :request, :timestamp, :properties
@@ -24,7 +17,7 @@ module SecureNative
       @context = if !event_options.context.nil?
                    event_options.context
                  else
-                   SecureNativeContext.default_context_builder
+                   Context.default_context_builder
                  end
 
       client_token = EncryptionUtils.decrypt(@context.client_token, securenative_options.api_key)
