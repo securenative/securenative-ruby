@@ -12,6 +12,8 @@ class QueueItem
 end
 
 class EventManager
+  attr_reader :activated
+
   def initialize(options = Options.new, http_client = nil)
     if options.api_key.nil?
       raise SecureNativeSDKError, 'API key cannot be None, please get your API key from SecureNative console.'
@@ -31,13 +33,19 @@ class EventManager
     @attempt = 0
     @coefficients = [1, 1, 2, 3, 5, 8, 13]
 
-    @thread = Thread.new { run }
+    @activated = false
+    @thread = nil
   end
 
   def send_async(event, resource_path)
     if @options.disable
       SecureNative::Log.warning('SDK is disabled. no operation will be performed')
       return
+    end
+
+    unless @activated
+      @thread = Thread.new { run }
+      @activated = true
     end
 
     item = QueueItem.new(resource_path, EventManager.serialize(event).to_json, false)
