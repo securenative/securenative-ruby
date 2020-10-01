@@ -43,9 +43,13 @@ class EventManager
       return
     end
 
-    unless @activated
-      @thread = Thread.new { run }
+    if @activated == false
       @activated = true
+      begin
+        @thread = Thread.new { run }
+      rescue StandardError => e
+        SecureNative::Log.error("Could not start event scheduler; #{e}")
+      end
     end
 
     item = QueueItem.new(resource_path, EventManager.serialize(event).to_json, false)
