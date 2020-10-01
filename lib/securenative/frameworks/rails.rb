@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module SecureNative
-  module FrameWorkContext
-    class RailsContext
+  module Frameworks
+    class Rails
       SECURENATIVE_COOKIE = '_sn'
 
       def self.get_client_token(request)

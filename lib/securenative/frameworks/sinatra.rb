@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module SecureNative
-  module FrameWorkContext
-    class SinatraContext
+  module Frameworks
+    class Sinatra
       SECURENATIVE_COOKIE = '_sn'
 
       def self.get_client_token(request)

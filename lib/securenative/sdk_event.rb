@@ -37,7 +37,7 @@ module SecureNative
     end
 
     def to_s
-      "securenative.context: #{@context}, rid: #{@rid}, event_type: #{@event_type}, user_id: #{@user_id},
+      "context: #{@context}, rid: #{@rid}, event_type: #{@event_type}, user_id: #{@user_id},
     user_traits: #{@user_traits}, request: #{@request}, timestamp: #{@timestamp}, properties: #{@properties}"
     end
   end

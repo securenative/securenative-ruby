@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module SecureNative
-  module FrameWorkContext
-    class HanamiContext
+  module Frameworks
+    class Hanami
       SECURENATIVE_COOKIE = '_sn'
 
       def self.get_client_token(request)
@@ -36,7 +36,7 @@ module SecureNative
       def self.get_headers(request)
         begin
           # Note: At the moment we're filtering out everything but user-agent since ruby's payload is way too big
-          {'user-agent' => request.env['HTTP_USER_AGENT']}
+          { 'user-agent' => request.env['HTTP_USER_AGENT'] }
         rescue StandardError
           nil
         end
