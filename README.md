@@ -50,36 +50,36 @@ To get your *API KEY*, login to your SecureNative account and go to project sett
 SecureNative can automatically load your config from *securenative.yml* file or from the file that is specified in your *SECURENATIVE_CONFIG_FILE* env variable:
 
 ```ruby
-require 'securenative/securenative'
+require 'securenative'
 
 
-secureative =  SecureNative::SecureNative.init
+secureative =  SecureNative::Client.init
 ```
 ### Option 2: Initialize via API Key
 
 ```ruby
-require 'securenative/sdk'
+require 'securenative'
 
 
-securenative =  SecureNative::SecureNative.init_with_api_key('YOUR_API_KEY')
+securenative =  SecureNative::Client.init_with_api_key('YOUR_API_KEY')
 ```
 
 ### Option 3: Initialize via ConfigurationBuilder
 ```ruby
-require 'securenative/sdk'
+require 'securenative'
 
 
-options = SecureNative::ConfigurationBuilder.new(api_key: 'API_KEY', max_events: 10, log_level: 'ERROR')
-SecureNative::SecureNative.init_with_options(options)                                 
+options = SecureNative::Config::ConfigurationBuilder.new(api_key: 'API_KEY', max_events: 10, log_level: 'ERROR')
+SecureNative::Client.init_with_options(options)                                 
 ```
 
 ## Getting SecureNative instance
 Once initialized, sdk will create a singleton instance which you can get: 
 ```ruby
-require 'securenative/sdk'
+require 'securenative'
 
 
-secureNative = SecureNative::SecureNative.instance
+secureNative = SecureNative::Client.instance
 ```
 
 ## Tracking events
@@ -88,15 +88,12 @@ Once the SDK has been initialized, tracking requests sent through the SDK
 instance. Make sure you build event with the EventBuilder:
 
  ```ruby
-require 'securenative/sdk'
-require 'securenative/models/event_options'
-require 'securenative/enums/event_types'
-require 'securenative/models/user_traits'
+require 'securenative'
 
 
 def track
-    securenative = SecureNative::SecureNative.instance
-    context = SecureNative::SecureNativeContext.new(client_token: 'SECURED_CLIENT_TOKEN', ip: '127.0.0.1',
+    securenative = SecureNative::Client.instance
+    context = SecureNative::Context.new(client_token: 'SECURED_CLIENT_TOKEN', ip: '127.0.0.1',
                                        headers: { 'user-agent' => 'Mozilla: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.3 Mozilla/5.0 (Macintosh; Intel Mac OS X x.y; rv:42.0) Gecko/20100101 Firefox/43.4' })
     
     event_options = SecureNative::EventOptions.new(event: SecureNative::EventTypes::LOG_IN, user_id: '1234', context: context,
@@ -112,15 +109,12 @@ end
 You can also create request securenative.context from requests:
 
 ```ruby
-require 'securenative/sdk'
-require 'securenative/models/event_options'
-require 'securenative/enums/event_types'
-require 'securenative/models/user_traits'
+require 'securenative'
 
 
 def track(request)
-    securenative = SecureNative::SecureNative.instance
-    context = SecureNative::SecureNativeContext.from_http_request(request)
+    securenative = SecureNative::Client.instance
+    context = SecureNative::Context.from_http_request(request)
     
     event_options = SecureNative::EventOptions.new(event: SecureNative::EventTypes::LOG_IN, user_id: '1234', context: context,
                                      user_traits: SecureNative::UserTraits.new(name: 'Your Name', email: 'name@gmail.com', phone: '+1234567890'),
@@ -137,15 +131,12 @@ end
 **Example**
 
 ```ruby
-require 'securenative/sdk'
-require 'securenative/models/event_options'
-require 'securenative/enums/event_types'
-require 'securenative/models/user_traits'
+require 'securenative'
 
 
 def verify(request)
-    securenative = SecureNative::SecureNative.instance
-    context = SecureNative::SecureNativeContext.from_http_request(request)
+    securenative = SecureNative::Client.instance
+    context = SecureNative::Context.from_http_request(request)
 
     event_options = SecureNative::EventOptions.new(event: SecureNative::EventTypes::LOG_IN, user_id: '1234', context: context,
                                          user_traits: SecureNative::UserTraits.new(name: 'Your Name', email: 'name@gmail.com', phone: '+1234567890'),
@@ -163,11 +154,11 @@ end
 Apply our filter to verify the request is from us, for example:
 
 ```ruby
-require 'securenative/sdk'
+require 'securenative'
 
 
 def webhook_endpoint(request)
-    securenative = SecureNative::SecureNative.instance
+    securenative = SecureNative::Client.instance
     
     # Checks if request is verified
     is_verified = securenative.verify_request_payload(request)
@@ -190,9 +181,9 @@ Initialize sdk as showed above.
 ### Options 2: Using ConfigurationBuilder
 
 ```ruby
-require 'securenative/sdk'
+require 'securenative'
 
-options = SecureNative::SecureNativeOptions.new(api_key: 'API_KEY', max_events: 10, log_level: 'ERROR', proxy_headers: ['CF-Connecting-IP'])
+options = SecureNative::Options.new(api_key: 'API_KEY', max_events: 10, log_level: 'ERROR', proxy_headers: ['CF-Connecting-IP'])
 
-SecureNative::SecureNative.init_with_options(options)
+SecureNative::Client.init_with_options(options)
 ``` 
