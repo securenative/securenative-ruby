@@ -20,7 +20,7 @@ end
 
 RSpec.describe EventManager do
   it 'successfully sends sync event with status code 200' do
-    options = ConfigurationBuilder.new(api_key: 'YOUR_API_KEY', api_url: 'https://api.securenative-stg.com/collector/api/v1')
+    options = SecureNative::Config::ConfigurationBuilder.new(api_key: 'YOUR_API_KEY', api_url: 'https://api.securenative-stg.com/collector/api/v1')
     event = SampleEvent.new
 
     stub_request(:post, 'https://api.securenative-stg.com/collector/api/v1/some-path/to-api')
@@ -37,14 +37,14 @@ RSpec.describe EventManager do
     event_manager = EventManager.new(options)
 
     event_manager.start_event_persist
-    res = event_manager.send_sync(event, 'some-path/to-api', false)
+    res = event_manager.send_sync(event, 'some-path/to-api')
     event_manager.stop_event_persist
 
     expect(res.code).to eq('200')
   end
 
   it 'fails when send sync event status code is 401' do
-    options = ConfigurationBuilder.new(api_key: 'YOUR_API_KEY', api_url: 'https://api.securenative-stg.com/collector/api/v1')
+    options = SecureNative::Config::ConfigurationBuilder.new(api_key: 'YOUR_API_KEY', api_url: 'https://api.securenative-stg.com/collector/api/v1')
     event = SampleEvent.new
 
     stub_request(:post, 'https://api.securenative-stg.com/collector/api/v1/some-path/to-api')
@@ -59,13 +59,13 @@ RSpec.describe EventManager do
       .to_return(status: 401, body: '', headers: {})
 
     event_manager = EventManager.new(options)
-    res = event_manager.send_sync(event, 'some-path/to-api', false)
+    res = event_manager.send_sync(event, 'some-path/to-api')
 
     expect(res.code).to eq('401')
   end
 
   it 'fails when send sync event status code is 500' do
-    options = ConfigurationBuilder.new(api_key: 'YOUR_API_KEY', api_url: 'https://api.securenative-stg.com/collector/api/v1')
+    options = SecureNative::Config::ConfigurationBuilder.new(api_key: 'YOUR_API_KEY', api_url: 'https://api.securenative-stg.com/collector/api/v1')
     event = SampleEvent.new
 
     stub_request(:post, 'https://api.securenative-stg.com/collector/api/v1/some-path/to-api')
@@ -80,7 +80,7 @@ RSpec.describe EventManager do
       .to_return(status: 500, body: '', headers: {})
 
     event_manager = EventManager.new(options)
-    res = event_manager.send_sync(event, 'some-path/to-api', false)
+    res = event_manager.send_sync(event, 'some-path/to-api')
 
     expect(res.code).to eq('500')
   end

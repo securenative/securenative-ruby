@@ -1,32 +1,34 @@
 # frozen_string_literal: true
 
-class ApiManager
-  def initialize(event_manager, securenative_options)
-    @event_manager = event_manager
-    @options = securenative_options
-  end
-
-  def track(event_options)
-    SecureNative::Log.debug('Track event call')
-    event = SecureNative::SDKEvent.new(event_options, @options)
-    @event_manager.send_async(event, ApiRoute::TRACK)
-  end
-
-  def verify(event_options)
-    SecureNative::Log.debug('Verify event call')
-    event = SecureNative::SDKEvent.new(event_options, @options)
-
-    begin
-      res = @event_manager.send_sync(event, ApiRoute::VERIFY, false)
-      ver_result = JSON.parse(res.body)
-      return VerifyResult.new(risk_level: ver_result['riskLevel'], score: ver_result['score'], triggers: ver_result['triggers'])
-    rescue StandardError => e
-      SecureNative::Log.debug("Failed to call verify; #{e}")
-    end
-    if @options.fail_over_strategy == SecureNative::FailOverStrategy::FAIL_OPEN
-      return SecureNative::VerifyResult.new(risk_level: RiskLevel::LOW, score: 0, triggers: nil)
+module SecureNative
+  class ApiManager
+    def initialize(event_manager, securenative_options)
+      @event_manager = event_manager
+      @options = securenative_options
     end
 
-    VerifyResult.new(risk_level: RiskLevel::HIGH, score: 1, triggers: nil)
+    def track(event_options)
+      SecureNative::Log.debug('Track event call')
+      event = SecureNative::SDKEvent.new(event_options, @options)
+      @event_manager.send_async(event, SecureNative::Enums::ApiRoute::TRACK)
+    end
+
+    def verify(event_options)
+      SecureNative::Log.debug('Verify event call')
+      event = SecureNative::SDKEvent.new(event_options, @options)
+
+      begin
+        res = @event_manager.send_sync(event, SecureNative::Enums::ApiRoute::VERIFY)
+        ver_result = JSON.parse(res.body)
+        return VerifyResult.new(risk_level: ver_result['riskLevel'], score: ver_result['score'], triggers: ver_result['triggers'])
+      rescue StandardError => e
+        SecureNative::Log.debug("Failed to call verify; #{e}")
+      end
+      if @options.fail_over_strategy == SecureNative::FailOverStrategy::FAIL_OPEN
+        return SecureNative::VerifyResult.new(risk_level: SecureNative::Enums::RiskLevel::LOW, score: 0, triggers: nil)
+      end
+
+      VerifyResult.new(risk_level: SecureNative::Enums::RiskLevel::HIGH, score: 1, triggers: nil)
+    end
   end
 end

@@ -6,7 +6,7 @@ require 'rspec'
 
 RSpec.describe SecureNative::HttpClient do
   it 'makes a simple post call' do
-    options = ConfigurationBuilder.new(api_key: 'YOUR_API_KEY', api_url: 'https://api.securenative-stg.com/collector/api/v1')
+    options = SecureNative::Config::ConfigurationBuilder.new(api_key: 'YOUR_API_KEY', api_url: 'https://api.securenative-stg.com/collector/api/v1')
 
     stub_request(:post, 'https://api.securenative-stg.com/collector/api/v1/track')
       .with(body: '{"event": "SOME_EVENT_NAME"}',

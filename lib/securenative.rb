@@ -35,6 +35,7 @@ require 'securenative/http_client'
 require 'securenative/event_manager'
 require 'securenative/api_manager'
 require 'securenative/sdk'
+require 'securenative/version'
 
 require 'yaml'
 require 'net/http'

@@ -9,7 +9,7 @@ RSpec.describe SecureNativeSDK do
   end
 
   it 'inits sdk without api key and throws' do
-    expect { SecureNativeSDK.init_with_options(ConfigurationManager.config_builder) }.to raise_error(SecureNativeSDKError)
+    expect { SecureNativeSDK.init_with_options(SecureNative::Config::ConfigurationManager.config_builder) }.to raise_error(SecureNativeSDKError)
   end
 
   it 'inits sdk with empty api key and throws' do
@@ -47,7 +47,7 @@ RSpec.describe SecureNativeSDK do
 
   it 'inits sdk with builder' do
     SecureNativeSDK._flush
-    securenative = SecureNativeSDK.init_with_options(ConfigurationBuilder.new(api_key: 'API_KEY', max_events: 10, log_level: 'ERROR'))
+    securenative = SecureNativeSDK.init_with_options(SecureNative::Config::ConfigurationBuilder.new(api_key: 'API_KEY', max_events: 10, log_level: 'ERROR'))
     options = securenative.options
 
     expect(options.api_key).to eq('API_KEY')

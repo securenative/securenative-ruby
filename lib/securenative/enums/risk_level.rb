@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
-module RiskLevel
-  LOW = 'low'
-  MEDIUM = 'medium'
-  HIGH = 'high'
+module SecureNative
+  module Enums
+    module RiskLevel
+      LOW = 'low'
+      MEDIUM = 'medium'
+      HIGH = 'high'
+    end
+  end
 end

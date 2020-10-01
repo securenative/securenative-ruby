@@ -69,7 +69,7 @@ securenative =  SecureNativeSDK.init_with_api_key('YOUR_API_KEY')
 require 'securenative'
 
 
-options = ConfigurationBuilder.new(api_key: 'API_KEY', max_events: 10, log_level: 'ERROR')
+options = SecureNative::Config::ConfigurationBuilder.new(api_key: 'API_KEY', max_events: 10, log_level: 'ERROR')
 SecureNativeSDK.init_with_options(options)                                 
 ```
 

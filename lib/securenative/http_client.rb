@@ -15,10 +15,10 @@ module SecureNative
 
     def _headers
       {
-          CONTENT_TYPE_HEADER => CONTENT_TYPE_HEADER_VALUE,
-          USER_AGENT_HEADER => USER_AGENT_HEADER_VALUE,
-          VERSION_HEADER => VersionUtils.version,
-          AUTHORIZATION_HEADER => @options.api_key
+        CONTENT_TYPE_HEADER => CONTENT_TYPE_HEADER_VALUE,
+        USER_AGENT_HEADER => USER_AGENT_HEADER_VALUE,
+        VERSION_HEADER => SecureNative::Utils::VersionUtils.version,
+        AUTHORIZATION_HEADER => @options.api_key
       }
     end
 
@@ -27,6 +27,7 @@ module SecureNative
       headers = _headers
 
       client = Net::HTTP.new(uri.host, uri.port)
+      client.read_timeout = @options.timeout
       client.use_ssl = true
       client.verify_mode = OpenSSL::SSL::VERIFY_NONE
 

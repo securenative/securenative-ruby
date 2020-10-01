@@ -20,7 +20,7 @@ module SecureNative
                    Context.default_context_builder
                  end
 
-      client_token = EncryptionUtils.decrypt(@context.client_token, securenative_options.api_key)
+      client_token = SecureNative::Utils::EncryptionUtils.decrypt(@context.client_token, securenative_options.api_key)
 
       @rid = SecureRandom.uuid.to_str
       @event_type = event_options.event
@@ -32,7 +32,7 @@ module SecureNative
                                     url: @context.url, http_method: @context.http_method)
 
 
-      @timestamp = DateUtils.to_timestamp(event_options.timestamp)
+      @timestamp = SecureNative::Utils::DateUtils.to_timestamp(event_options.timestamp)
       @properties = event_options.properties
     end
 

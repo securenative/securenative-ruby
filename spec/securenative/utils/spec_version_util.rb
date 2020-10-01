@@ -3,8 +3,8 @@
 require 'securenative'
 require 'rspec'
 
-RSpec.describe VersionUtils do
+RSpec.describe SecureNative::Utils::VersionUtils do
   it 'checks that parsing version is valid' do
-    expect(VersionUtils.version).not_to eq('unknown')
+    expect(SecureNative::Utils::VersionUtils.version).not_to eq('unknown')
   end
 end

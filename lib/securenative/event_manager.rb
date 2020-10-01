@@ -27,13 +27,10 @@ class EventManager
 
     @queue = []
     @semaphore = Mutex.new
-    @interval = options.interval
     @options = options
     @send_enabled = false
     @attempt = 0
     @coefficients = [1, 1, 2, 3, 5, 8, 13]
-
-    @activated = false
     @thread = nil
   end
 
@@ -43,14 +40,7 @@ class EventManager
       return
     end
 
-    if @activated == false
-      @activated = true
-      begin
-        @thread = Thread.new { run }
-      rescue StandardError => e
-        SecureNative::Log.error("Could not start event scheduler; #{e}")
-      end
-    end
+    start_event_persist unless @send_enabled
 
     item = QueueItem.new(resource_path, EventManager.serialize(event).to_json, false)
     @queue.append(item)
@@ -62,7 +52,7 @@ class EventManager
     end
   end
 
-  def send_sync(event, resource_path, retry_sending)
+  def send_sync(event, resource_path)
     if @options.disable
       SecureNative::Log.warning('SDK is disabled. no operation will be performed')
       return
@@ -73,8 +63,6 @@ class EventManager
 
     if res.nil? || res.code != '200'
       SecureNative::Log.info("SecureNative failed to call endpoint #{resource_path} with event #{event}. adding back to queue")
-      item = QueueItem.new(resource_path, EventManager.serialize(event).to_json, retry_sending)
-      @queue.append(item)
     end
 
     res
@@ -108,14 +96,20 @@ class EventManager
           end
         end
       end
-      sleep @interval / 1000 if @queue.empty?
+      sleep @options.interval / 1000 if @queue.empty?
     end
   end
 
   def start_event_persist
     SecureNative::Log.debug('Starting automatic event persistence')
-    if @options.auto_send || @send_enabled
-      @send_enabled = true
+    if @options.auto_send
+      begin
+        @thread = Thread.new { run }
+        @send_enabled = true
+      rescue StandardError => e
+        SecureNative::Log.error("Could not start event scheduler; #{e}")
+        @send_enabled = false
+      end
     else
       SecureNative::Log.debug('Automatic event persistence is disabled, you should persist events manually')
     end

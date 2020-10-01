@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
-module ApiRoute
-  TRACK = 'track'
-  VERIFY = 'verify'
+module SecureNative
+  module Enums
+    module ApiRoute
+      TRACK = 'track'
+      VERIFY = 'verify'
+    end
+  end
 end
