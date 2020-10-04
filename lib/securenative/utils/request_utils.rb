@@ -5,6 +5,7 @@ module SecureNative
     class RequestUtils
       SECURENATIVE_COOKIE = '_sn'
       SECURENATIVE_HEADER = 'x-securenative'
+      PREFIX = 'HTTP_'
 
       def self.get_secure_header_from_request(headers)
         begin
@@ -15,15 +16,21 @@ module SecureNative
         []
       end
 
-      def self.get_client_ip_from_request(request, options = nil)
+      def self.get_client_ip_from_request(request, options)
         unless options.nil?
           for header in options.proxy_headers do
             begin
               h = request.env[header]
+              unless !h.nil?
+                h = request.env[self.parse_ip(header)]
+              end
               return h.scan(/\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b/)[0] unless h.nil?
             rescue NoMethodError
               begin
                 h = request[header]
+                unless !h.nil?
+                  h = request.env[self.parse_ip(header)]
+                end
                 return h.scan(/\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b/)[0] unless h.nil?
               rescue NoMethodError
               end
@@ -78,6 +85,11 @@ module SecureNative
         rescue NoMethodError
           ''
         end
+      end
+
+      def self.parse_ip(headers)
+        h = headers.gsub('-', '_')
+        return PREFIX + h.upcase
       end
     end
   end
