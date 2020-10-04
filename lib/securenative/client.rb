@@ -42,6 +42,10 @@ module SecureNative
       end
     end
 
+    def from_http_request(request)
+      SecureNative::Context.from_http_request(request, @options)
+    end
+
     def self.init
       options = SecureNative::Config::ConfigurationManager.load_config
       init_with_options(options)

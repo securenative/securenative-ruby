@@ -21,7 +21,7 @@ module SecureNative
       SecureNative::Context.new
     end
 
-    def self.from_http_request(request)
+    def self.from_http_request(request, options)
       client_token = SecureNative::Frameworks::Rails.get_client_token(request)
       client_token = SecureNative::Frameworks::Sinatra.get_client_token(request) if client_token.nil?
       client_token = SecureNative::Frameworks::Hanami.get_client_token(request) if client_token.nil?
@@ -57,9 +57,9 @@ module SecureNative
         client_token = SecureNative::Utils::RequestUtils.get_secure_header_from_request(headers)
       end
 
-      SecureNative::Context.new(client_token: client_token, ip: SecureNative::Utils::RequestUtils.get_client_ip_from_request(request),
-                     remote_ip: SecureNative::Utils::RequestUtils.get_remote_ip_from_request(request),
-                     headers: headers, url: url, http_method: method || '', body: body)
+      SecureNative::Context.new(client_token: client_token, ip: SecureNative::Utils::RequestUtils.get_client_ip_from_request(request, options),
+                                remote_ip: SecureNative::Utils::RequestUtils.get_remote_ip_from_request(request),
+                                headers: headers, url: url, http_method: method || '', body: body)
     end
   end
 end

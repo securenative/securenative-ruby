@@ -114,7 +114,7 @@ require 'securenative'
 
 def track(request)
     securenative = SecureNative::Client.instance
-    context = SecureNative::Context.from_http_request(request)
+    context = securenative.from_http_request(request)
     
     event_options = SecureNative::EventOptions.new(event: SecureNative::EventTypes::LOG_IN, user_id: '1234', context: context,
                                      user_traits: SecureNative::UserTraits.new(name: 'Your Name', email: 'name@gmail.com', phone: '+1234567890'),
@@ -136,7 +136,7 @@ require 'securenative'
 
 def verify(request)
     securenative = SecureNative::Client.instance
-    context = SecureNative::Context.from_http_request(request)
+    context = securenative.from_http_request(request)
 
     event_options = SecureNative::EventOptions.new(event: SecureNative::EventTypes::LOG_IN, user_id: '1234', context: context,
                                          user_traits: SecureNative::UserTraits.new(name: 'Your Name', email: 'name@gmail.com', phone: '+1234567890'),
