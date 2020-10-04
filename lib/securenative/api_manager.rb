@@ -25,10 +25,10 @@ module SecureNative
         SecureNative::Log.debug("Failed to call verify; #{e}")
       end
       if @options.fail_over_strategy == SecureNative::FailOverStrategy::FAIL_OPEN
-        return SecureNative::VerifyResult.new(risk_level: SecureNative::Enums::RiskLevel::LOW, score: 0, triggers: nil)
+        return SecureNative::VerifyResult.new(risk_level: SecureNative::Enums::RiskLevel::LOW, score: 0, triggers: [])
       end
 
-      VerifyResult.new(risk_level: SecureNative::Enums::RiskLevel::HIGH, score: 1, triggers: nil)
+      VerifyResult.new(risk_level: SecureNative::Enums::RiskLevel::HIGH, score: 1, triggers: [])
     end
   end
 end
