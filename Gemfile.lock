@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    securenative (0.1.32)
+    securenative (0.1.33)
 
 GEM
   remote: https://rubygems.org/
