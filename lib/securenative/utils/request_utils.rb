@@ -17,25 +17,26 @@ module SecureNative
       end
 
       def self.get_client_ip_from_request(request, options)
-        unless options.nil?
-          for header in options.proxy_headers do
+        unless options.proxy_headers.nil?
+          options.proxy_headers.each { |header|
             begin
               h = request.env[header]
-              unless !h.nil?
+              if h.nil?
                 h = request.env[self.parse_ip(header)]
               end
               return h.scan(/\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b/)[0] unless h.nil?
             rescue NoMethodError
               begin
                 h = request[header]
-                unless !h.nil?
+                if h.nil?
                   h = request.env[self.parse_ip(header)]
                 end
                 return h.scan(/\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b/)[0] unless h.nil?
               rescue NoMethodError
+                # Ignored
               end
             end
-          end
+          }
         end
 
         begin
@@ -46,6 +47,7 @@ module SecureNative
             x_forwarded_for = request['HTTP_X_FORWARDED_FOR']
             return x_forwarded_for.scan(/\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b/)[0] unless x_forwarded_for.nil?
           rescue NoMethodError
+            # Ignored
           end
         end
 
@@ -57,6 +59,7 @@ module SecureNative
             x_forwarded_for = request['HTTP_X_REAL_IP']
             return x_forwarded_for.scan(/\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b/)[0] unless x_forwarded_for.nil?
           rescue NoMethodError
+            # Ignored
           end
         end
 
@@ -68,12 +71,14 @@ module SecureNative
             x_forwarded_for = request['REMOTE_ADDR']
             return x_forwarded_for.scan(/\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b/)[0] unless x_forwarded_for.nil?
           rescue NoMethodError
+            # Ignored
           end
         end
 
         begin
           return request.ip unless request.ip.nil?
         rescue NoMethodError
+          # Ignored
         end
 
         ''
