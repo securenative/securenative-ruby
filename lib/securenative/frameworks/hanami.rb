@@ -35,8 +35,13 @@ module SecureNative
 
       def self.get_headers(request)
         begin
-          # Note: At the moment we're filtering out everything but user-agent since ruby's payload is way too big
-          { 'user-agent' => request.env['HTTP_USER_AGENT'] }
+          headers = []
+          request.headers.env.select { |k, _| k.in?(ActionDispatch::Http::Headers::CGI_VARIABLES) }.each { |header|
+            headers.append(header[0].downcase.gsub("_", "-"))
+          }
+          headers.append({'user-agent' => request.env['HTTP_USER_AGENT']})
+
+          return headers
         rescue StandardError
           nil
         end
