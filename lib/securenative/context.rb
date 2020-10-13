@@ -34,7 +34,7 @@ module SecureNative
         # Standard Ruby request
         headers = request.header.to_hash if headers.nil?
       rescue StandardError
-        headers = []
+        headers = {}
       end
 
       url = SecureNative::Frameworks::Rails.get_url(request)

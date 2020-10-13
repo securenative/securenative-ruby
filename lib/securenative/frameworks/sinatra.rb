@@ -35,9 +35,9 @@ module SecureNative
 
       def self.get_headers(request)
         begin
-          headers = []
+          headers = {}
           request.headers.env.select { |k, _| k.in?(ActionDispatch::Http::Headers::CGI_VARIABLES) || k =~ /^HTTP_/ }.each { |header|
-            headers.append(header[0].downcase.gsub("http_", "").gsub("_", "-"))
+            headers[header[0].downcase.gsub("http_", "").gsub("_", "-")] = header[1]
           }
           return headers
         rescue StandardError

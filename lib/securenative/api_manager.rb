@@ -20,6 +20,12 @@ module SecureNative
       begin
         res = @event_manager.send_sync(event, SecureNative::Enums::ApiRoute::VERIFY)
         ver_result = JSON.parse(res.body)
+        if res.code != "200"
+          if @options.fail_over_strategy == SecureNative::FailOverStrategy::FAIL_OPEN
+            return SecureNative::VerifyResult.new(risk_level: SecureNative::Enums::RiskLevel::LOW, score: 0, triggers: [])
+          end
+          return VerifyResult.new(risk_level: SecureNative::Enums::RiskLevel::HIGH, score: 1, triggers: [])
+        end
         return VerifyResult.new(risk_level: ver_result['riskLevel'], score: ver_result['score'], triggers: ver_result['triggers'])
       rescue StandardError => e
         SecureNative::Log.debug("Failed to call verify; #{e}")
