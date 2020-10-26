@@ -62,7 +62,7 @@ class EventManager
     res = @http_client.post(resource_path, EventManager.serialize(event).to_json)
 
     if res.nil? || res.code != '200'
-      SecureNative::Log.info("SecureNative failed to call endpoint #{resource_path} with event #{event}. adding back to queue")
+      SecureNative::Log.info("SecureNative failed to call endpoint #{resource_path} with event #{event}")
     end
 
     res
