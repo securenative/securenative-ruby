@@ -176,7 +176,7 @@ SECURENATIVE_API_KEY: dsbe27fh3437r2yd326fg3fdg36f43
 SECURENATIVE_PROXY_HEADERS: ["CF-Connecting-IP"]
 ```
 
-Initialize sdk as showed above.
+Initialize sdk as shown above.
 
 ### Options 2: Using ConfigurationBuilder
 

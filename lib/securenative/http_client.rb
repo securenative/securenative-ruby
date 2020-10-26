@@ -27,7 +27,7 @@ module SecureNative
       headers = _headers
 
       client = Net::HTTP.new(uri.host, uri.port)
-      client.read_timeout = @options.timeout
+      client.read_timeout = @options.timeout / 1000
       client.use_ssl = true
       client.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
