@@ -49,12 +49,18 @@ module SecureNative
 
         begin
           x_forwarded_for = request.env['HTTP_X_FORWARDED_FOR']
+          if ip.include? ','
+            x_forwarded_for = ip.split(',')[0]
+          end
           if self.validate_ip(x_forwarded_for)
             return x_forwarded_for
           end
         rescue NoMethodError
           begin
             x_forwarded_for = request['HTTP_X_FORWARDED_FOR']
+            if ip.include? ','
+              x_forwarded_for = ip.split(',')[0]
+            end
             if self.validate_ip(x_forwarded_for)
               return x_forwarded_for
             end
@@ -65,12 +71,18 @@ module SecureNative
 
         begin
           x_forwarded_for = request.env['HTTP_X_REAL_IP']
+          if ip.include? ','
+            x_forwarded_for = ip.split(',')[0]
+          end
           if self.validate_ip(x_forwarded_for)
             return x_forwarded_for
           end
         rescue NoMethodError
           begin
             x_forwarded_for = request['HTTP_X_REAL_IP']
+            if ip.include? ','
+              x_forwarded_for = ip.split(',')[0]
+            end
             if self.validate_ip(x_forwarded_for)
               return x_forwarded_for
             end
@@ -81,12 +93,18 @@ module SecureNative
 
         begin
           x_forwarded_for = request.env['REMOTE_ADDR']
+          if ip.include? ','
+            x_forwarded_for = ip.split(',')[0]
+          end
           if self.validate_ip(x_forwarded_for)
             return x_forwarded_for
           end
         rescue NoMethodError
           begin
             x_forwarded_for = request['REMOTE_ADDR']
+            if ip.include? ','
+              x_forwarded_for = ip.split(',')[0]
+            end
             if self.validate_ip(x_forwarded_for)
               return x_forwarded_for
             end
@@ -119,6 +137,9 @@ module SecureNative
 
       def self.parse_proxy_header(headers, header_key)
         h = headers.gsub(header_key + ': ', '')
+        if headers.include? ','
+          h = h.split(',')[0]
+        end
         return h
       end
 
