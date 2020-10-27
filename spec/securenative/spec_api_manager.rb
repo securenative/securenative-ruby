@@ -55,7 +55,7 @@ RSpec.describe SecureNative::ApiManager do
         'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
         'Authorization' => 'YOUR_API_KEY',
         'Content-Type' => 'application/json',
-        'Sn-Version' => '0.1.36',
+        'Sn-Version' => '0.1.37',
         'User-Agent' => 'SecureNative-ruby'
       }
     ).to_return(status: 200, body: '', headers: {})
