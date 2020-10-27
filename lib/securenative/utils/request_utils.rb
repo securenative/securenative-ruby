@@ -48,21 +48,21 @@ module SecureNative
         end
 
         begin
-          x_forwarded_for = request.env['HTTP_X_FORWARDED_FOR']
-          if ip.include? ','
-            x_forwarded_for = ip.split(',')[0]
+          header_value = request.env['HTTP_X_FORWARDED_FOR']
+          if header_value.include? ','
+            header_value = ip.split(',')[0]
           end
-          if self.validate_ip(x_forwarded_for)
-            return x_forwarded_for
+          if self.validate_ip(header_value)
+            return header_value
           end
         rescue NoMethodError
           begin
-            x_forwarded_for = request['HTTP_X_FORWARDED_FOR']
-            if ip.include? ','
-              x_forwarded_for = ip.split(',')[0]
+            header_value = request['HTTP_X_FORWARDED_FOR']
+            if header_value.include? ','
+              header_value = ip.split(',')[0]
             end
-            if self.validate_ip(x_forwarded_for)
-              return x_forwarded_for
+            if self.validate_ip(header_value)
+              return header_value
             end
           rescue NoMethodError
             # Ignored
@@ -70,21 +70,21 @@ module SecureNative
         end
 
         begin
-          x_forwarded_for = request.env['HTTP_X_REAL_IP']
-          if ip.include? ','
-            x_forwarded_for = ip.split(',')[0]
+          header_value = request.env['HTTP_X_REAL_IP']
+          if header_value.include? ','
+            header_value = ip.split(',')[0]
           end
-          if self.validate_ip(x_forwarded_for)
-            return x_forwarded_for
+          if self.validate_ip(header_value)
+            return header
           end
         rescue NoMethodError
           begin
-            x_forwarded_for = request['HTTP_X_REAL_IP']
-            if ip.include? ','
-              x_forwarded_for = ip.split(',')[0]
+            header_value = request['HTTP_X_REAL_IP']
+            if header_value.include? ','
+              header_value = ip.split(',')[0]
             end
-            if self.validate_ip(x_forwarded_for)
-              return x_forwarded_for
+            if self.validate_ip(header_value)
+              return header_value
             end
           rescue NoMethodError
             # Ignored
@@ -92,21 +92,21 @@ module SecureNative
         end
 
         begin
-          x_forwarded_for = request.env['REMOTE_ADDR']
-          if ip.include? ','
-            x_forwarded_for = ip.split(',')[0]
+          header_value = request.env['REMOTE_ADDR']
+          if header_value.include? ','
+            header_value = ip.split(',')[0]
           end
-          if self.validate_ip(x_forwarded_for)
-            return x_forwarded_for
+          if self.validate_ip(header_value)
+            return header_value
           end
         rescue NoMethodError
           begin
-            x_forwarded_for = request['REMOTE_ADDR']
-            if ip.include? ','
-              x_forwarded_for = ip.split(',')[0]
+            header_value = request['REMOTE_ADDR']
+            if header_value.include? ','
+              header_value = ip.split(',')[0]
             end
-            if self.validate_ip(x_forwarded_for)
-              return x_forwarded_for
+            if self.validate_ip(header_value)
+              return header_value
             end
           rescue NoMethodError
             # Ignored
