@@ -50,7 +50,7 @@ module SecureNative
         begin
           header_value = request.env['HTTP_X_FORWARDED_FOR']
           if header_value.include? ','
-            header_value = ip.split(',')[0]
+            header_value = header_value.split(',')[0]
           end
           if self.validate_ip(header_value)
             return header_value
@@ -59,7 +59,7 @@ module SecureNative
           begin
             header_value = request['HTTP_X_FORWARDED_FOR']
             if header_value.include? ','
-              header_value = ip.split(',')[0]
+              header_value = header_value.split(',')[0]
             end
             if self.validate_ip(header_value)
               return header_value
@@ -72,7 +72,7 @@ module SecureNative
         begin
           header_value = request.env['HTTP_X_REAL_IP']
           if header_value.include? ','
-            header_value = ip.split(',')[0]
+            header_value = header_value.split(',')[0]
           end
           if self.validate_ip(header_value)
             return header
@@ -81,7 +81,7 @@ module SecureNative
           begin
             header_value = request['HTTP_X_REAL_IP']
             if header_value.include? ','
-              header_value = ip.split(',')[0]
+              header_value = header_value.split(',')[0]
             end
             if self.validate_ip(header_value)
               return header_value
@@ -94,7 +94,7 @@ module SecureNative
         begin
           header_value = request.env['REMOTE_ADDR']
           if header_value.include? ','
-            header_value = ip.split(',')[0]
+            header_value = header_value.split(',')[0]
           end
           if self.validate_ip(header_value)
             return header_value
@@ -103,7 +103,7 @@ module SecureNative
           begin
             header_value = request['REMOTE_ADDR']
             if header_value.include? ','
-              header_value = ip.split(',')[0]
+              header_value = header_value.split(',')[0]
             end
             if self.validate_ip(header_value)
               return header_value
