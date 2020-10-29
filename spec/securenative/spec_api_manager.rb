@@ -72,6 +72,6 @@ RSpec.describe SecureNative::ApiManager do
     expect(result).not_to be_nil
     expect(result.risk_level).to eq('low')
     expect(result.score).to eq(0)
-    expect(result.triggers).to eq(nil)
+    expect(result.triggers).to eq([])
   end
 end

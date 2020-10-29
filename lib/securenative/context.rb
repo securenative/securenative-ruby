@@ -54,7 +54,7 @@ module SecureNative
       end
 
       if SecureNative::Utils::Utils.null_or_empty?(client_token)
-        client_token = SecureNative::Utils::RequestUtils.get_secure_header_from_request(request.headers)
+          client_token = SecureNative::Utils::RequestUtils.get_secure_header_from_request(headers)
       end
 
       SecureNative::Context.new(client_token: client_token, ip: SecureNative::Utils::RequestUtils.get_client_ip_from_request(request, options),

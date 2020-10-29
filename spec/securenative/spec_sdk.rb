@@ -5,6 +5,7 @@ require 'rspec'
 
 RSpec.describe SecureNative::Client do
   it 'gets sdk instance without init throws' do
+    SecureNative::Client._flush
     expect { SecureNative::Client.instance }.to raise_error(SecureNativeSDKIllegalStateError)
   end
 

@@ -7,6 +7,8 @@ require 'hanami'
 require 'sinatra'
 require 'rspec'
 
+securenative = SecureNative::Client.init_with_api_key('YOUR_API_KEY')
+
 RSpec.describe SecureNative::Context do
   it 'creates context from ruby default request' do
     stub_request(:any, 'www.example.com')
@@ -14,7 +16,7 @@ RSpec.describe SecureNative::Context do
                  headers: { '_sn': '71532c1fad2c7f56118f7969e401f3cf080239140d208e7934e6a530818c37e544a0c2330a487bcc6fe4f662a57f265a3ed9f37871e80529128a5e4f2ca02db0fb975ded401398f698f19bb0cafd68a239c6caff99f6f105286ab695eaf3477365bdef524f5d70d9be1d1d474506b433aed05d7ed9a435eeca357de57817b37c638b6bb417ffb101eaf856987615a77a' })
 
     request = Net::HTTP.get_response('www.example.com', '/')
-    context = SecureNative::Context.from_http_request(request)
+    context = securenative.from_http_request(request)
 
     expect(context.ip).to eq('')
     expect(context.http_method).to eq('')
@@ -26,37 +28,37 @@ RSpec.describe SecureNative::Context do
 
   it 'creates context from rails request' do
     request = ActionDispatch::Request.new(nil)
-    context = SecureNative::Context.from_http_request(request)
+    context = securenative.from_http_request(request)
 
     expect(context.ip).to eq('')
     expect(context.http_method).to eq('')
     expect(context.url).to eq('')
     expect(context.remote_ip).to eq('')
-    expect(context.headers).to eq([])
+    expect(context.headers).to eq({})
     expect(context.body).to eq('')
   end
 
   it 'creates context from sinatra request' do
     request = Sinatra::Request.new(nil)
-    context = SecureNative::Context.from_http_request(request)
+    context = securenative.from_http_request(request)
 
     expect(context.ip).to eq('')
     expect(context.http_method).to eq('')
     expect(context.url).to eq('')
     expect(context.remote_ip).to eq('')
-    expect(context.headers).to eq([])
+    expect(context.headers).to eq({})
     expect(context.body).to eq('')
   end
 
   it 'creates context from hanami request' do
     request = Hanami::Action::Request
-    context = SecureNative::Context.from_http_request(request)
+    context = securenative.from_http_request(request)
 
     expect(context.ip).to eq('')
     expect(context.http_method).to eq('')
     expect(context.url).to eq('')
     expect(context.remote_ip).to eq('')
-    expect(context.headers).to eq([])
+    expect(context.headers).to eq({})
     expect(context.body).to eq('')
   end
 
