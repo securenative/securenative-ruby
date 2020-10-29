@@ -55,7 +55,7 @@ RSpec.describe SecureNative::ApiManager do
         'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
         'Authorization' => 'YOUR_API_KEY',
         'Content-Type' => 'application/json',
-        'Sn-Version' => '0.1.39',
+        'Sn-Version' => '0.1.40',
         'User-Agent' => 'SecureNative-ruby'
       }
     ).to_return(status: 200, body: '', headers: {})
@@ -72,6 +72,6 @@ RSpec.describe SecureNative::ApiManager do
     expect(result).not_to be_nil
     expect(result.risk_level).to eq('low')
     expect(result.score).to eq(0)
-    expect(result.triggers).to eq(nil)
+    expect(result.triggers).to eq([])
   end
 end
