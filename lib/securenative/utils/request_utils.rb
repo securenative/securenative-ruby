@@ -26,11 +26,15 @@ module SecureNative
             begin
               header_value = request.env[header]
             rescue NoMethodError
-              header_value = request[header]
-            rescue NoMethodError
-              header_value = request.header[header]
-            rescue NoMethodError
-              header_value = nil
+              begin
+                header_value = request[header]
+              rescue NoMethodError
+                begin
+                  header_value = request.header[header]
+                rescue NoMethodError
+                  header_value = nil
+                end
+              end
             end
             unless header_value.nil?
               parsed = self.parse_and_validate_ip(header_value, header)
@@ -46,11 +50,15 @@ module SecureNative
           begin
             header_value = request.env[header]
           rescue NoMethodError
-            header_value = request[header]
-          rescue NoMethodError
-            header_value = request.header[header]
-          rescue NoMethodError
-            header_value = nil
+            begin
+              header_value = request[header]
+            rescue NoMethodError
+              begin
+                header_value = request.header[header]
+              rescue NoMethodError
+                header_value = nil
+              end
+            end
           end
           unless header_value.nil?
             parsed = self.parse_and_validate_ip(header_value, header)
