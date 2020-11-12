@@ -7,6 +7,7 @@ module SecureNative
     class RequestUtils
       SECURENATIVE_COOKIE = '_sn'
       SECURENATIVE_HEADER = 'x-securenative'
+      IP_HEADERS = %w[HTTP_X_FORWARDED_FOR HTTP_X_REAL_IP REMOTE_ADDR x-forwarded-for x-client-ip x-real-ip x-forwarded x-cluster-client-ip forwarded-for forwarded via]
       PREFIX = 'HTTP_'
 
       def self.get_secure_header_from_request(headers)
@@ -19,104 +20,50 @@ module SecureNative
       end
 
       def self.get_client_ip_from_request(request, options)
+        # proxy headers extraction
         unless options.proxy_headers.nil?
           options.proxy_headers.each { |header|
             begin
-              h = request.env[header]
-              if h.nil?
-                h = request.env[self.parse_ip(header)]
-              end
-              parsed = self.parse_proxy_header(h, header)
-              if self.validate_ip(parsed)
-                return parsed
-              end
+              header_value = request.env[header]
             rescue NoMethodError
-              begin
-                h = request[header]
-                if h.nil?
-                  h = request.env[self.parse_ip(header)]
-                end
-                parsed = self.parse_proxy_header(h, header)
-                if self.validate_ip(parsed)
-                  return parsed
-                end
-              rescue NoMethodError
-                # Ignored
+              header_value = request[header]
+            rescue NoMethodError
+              header_value = request.header[header]
+            rescue NoMethodError
+              header_value = nil
+            end
+            unless header_value.nil?
+              parsed = self.parse_and_validate_ip(header_value, header)
+              unless parsed.nil?
+                return parsed
               end
             end
           }
         end
 
-        begin
-          header_value = request.env['HTTP_X_FORWARDED_FOR']
-          if header_value.include? ','
-            header_value = header_value.split(',')[0]
-          end
-          if self.validate_ip(header_value)
-            return header_value
-          end
-        rescue NoMethodError
+        # extract from IP_HEADERS list
+        IP_HEADERS.each { |header|
           begin
-            header_value = request['HTTP_X_FORWARDED_FOR']
-            if header_value.include? ','
-              header_value = header_value.split(',')[0]
-            end
-            if self.validate_ip(header_value)
-              return header_value
-            end
+            header_value = request.env[header]
           rescue NoMethodError
-            # Ignored
-          end
-        end
-
-        begin
-          header_value = request.env['HTTP_X_REAL_IP']
-          if header_value.include? ','
-            header_value = header_value.split(',')[0]
-          end
-          if self.validate_ip(header_value)
-            return header
-          end
-        rescue NoMethodError
-          begin
-            header_value = request['HTTP_X_REAL_IP']
-            if header_value.include? ','
-              header_value = header_value.split(',')[0]
-            end
-            if self.validate_ip(header_value)
-              return header_value
-            end
+            header_value = request[header]
           rescue NoMethodError
-            # Ignored
-          end
-        end
-
-        begin
-          header_value = request.env['REMOTE_ADDR']
-          if header_value.include? ','
-            header_value = header_value.split(',')[0]
-          end
-          if self.validate_ip(header_value)
-            return header_value
-          end
-        rescue NoMethodError
-          begin
-            header_value = request['REMOTE_ADDR']
-            if header_value.include? ','
-              header_value = header_value.split(',')[0]
-            end
-            if self.validate_ip(header_value)
-              return header_value
-            end
+            header_value = request.header[header]
           rescue NoMethodError
-            # Ignored
+            header_value = nil
           end
-        end
+          unless header_value.nil?
+            parsed = self.parse_and_validate_ip(header_value, header)
+            unless parsed.nil?
+              return parsed
+            end
+          end
+        }
 
         begin
           return request.ip unless request.ip.nil?
         rescue NoMethodError
-          # Ignored
+          ''
         end
 
         ''
@@ -135,33 +82,23 @@ module SecureNative
         return PREFIX + h.upcase
       end
 
-      def self.parse_proxy_header(headers, header_key)
+      def self.parse_and_validate_ip(headers, header_key)
         h = headers.gsub(header_key + ': ', '')
         if headers.include? ','
-          h = h.split(',')[0]
-        end
-        return h
-      end
-
-      def self.validate_ip(ip)
-        if ip.nil?
-          return false
+          h = h.split(',')
+          h.each { |value|
+            if IpUtils.valid_public_ip?(value)
+              return value
+            end
+          }
         end
 
-        begin
-          ipaddr = IPAddr.new(ip)
-          if ipaddr.ipv4?
-            return true
-          end
-
-          if ipaddr.ipv6?
-            return true
-          end
-        rescue Exception
-          # Ignored
+        if IpUtils.valid_public_ip?(h)
+          return h
         end
-
-        return false
+        if IpUtils.loop_back?(h)
+          return h
+        end
       end
     end
   end
