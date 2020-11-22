@@ -25,13 +25,14 @@ jobs:
       - name: Run tests
         run: bundle exec rspec spec --pattern **/**/spec_*.rb
 
-      - name: Create changelog
-        uses: srepollock/changelog-generator-action@master
+      - name: Generate changelog
+        id: changelog
+        uses: metcalfc/changelog-generator@v0.4.4
         with:
-          REPO_NAME: ${{secrets.REPO}}
-          ACCESS_TOKEN: ${{secrets.GITHUB_TOKEN}}
-          PATH: /CHANGELOG.md
-          COMMIT_MESSAGE: update release notes
+          myToken: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get the changelog
+        run: echo "${{ steps.changelog.outputs.changelog }}" >> CHANGELOG.md
 
       - name: Notify slack success
         if: success()
