@@ -26,11 +26,12 @@ jobs:
         run: bundle exec rspec spec --pattern **/**/spec_*.rb
 
       - name: Create changelog
-        uses: actions/checkout@v1
-        uses: heinrichreimer/github-changelog-generator-action@v2.1.1
+        uses: srepollock/changelog-generator-action@master
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          output: ../../CHANGELOG.md
+          REPO_NAME: ${{secrets.REPO}}
+          ACCESS_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          PATH: /CHANGELOG.md
+          COMMIT_MESSAGE: update release notes
 
       - name: Notify slack success
         if: success()
