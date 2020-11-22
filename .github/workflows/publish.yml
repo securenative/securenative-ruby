@@ -37,11 +37,6 @@ jobs:
         env:
           GEM_HOST_API_KEY: ${{secrets.RUBYGEMS_AUTH_TOKEN}}
 
-      - name: Create changelog
-        uses: heinrichreimer/github-changelog-generator-action@v2.1.1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Notify slack success
         if: success()
         env:
