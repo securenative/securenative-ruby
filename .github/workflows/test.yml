@@ -15,6 +15,8 @@ jobs:
         os: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v1
+        with:
+          fetch-depth: 0
       - uses: actions/setup-ruby@v1
         with:
           ruby-version: 2.6.x
@@ -26,13 +28,13 @@ jobs:
         run: bundle exec rspec spec --pattern **/**/spec_*.rb
 
       - name: Generate changelog
-        id: changelog
-        uses: metcalfc/changelog-generator@v0.4.4
-        with:
-          myToken: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Get the changelog
-        run: echo "${{ steps.changelog.outputs.changelog }}" >> CHANGELOG.md
+        uses: BobAnkh/auto-generate-changelog@master
+          with:
+            REPO_NAME: 'BobAnkh/auto-generate-changelog'
+            ACCESS_TOKEN: ${{secrets.GITHUB_TOKEN}}
+            PATH: '/CHANGELOG.md'
+            COMMIT_MESSAGE: 'docs(CHANGELOG): update release notes'
+            TYPE: 'feat:Feature,fix:Bug Fixes,docs:Documentation,refactor:Refactor,perf:Performance Improvements'
 
       - name: Notify slack success
         if: success()
