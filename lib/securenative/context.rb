@@ -27,9 +27,9 @@ module SecureNative
       client_token = SecureNative::Frameworks::Hanami.get_client_token(request) if client_token.nil?
 
       begin
-        headers = SecureNative::Frameworks::Rails.get_headers(request)
-        headers = SecureNative::Frameworks::Sinatra.get_headers(request) if headers.nil?
-        headers = SecureNative::Frameworks::Hanami.get_headers(request) if headers.nil?
+        headers = SecureNative::Frameworks::Rails.get_headers(request, options)
+        headers = SecureNative::Frameworks::Sinatra.get_headers(request, options) if headers.nil?
+        headers = SecureNative::Frameworks::Hanami.get_headers(request, options) if headers.nil?
 
         # Standard Ruby request
         headers = request.header.to_hash if headers.nil?

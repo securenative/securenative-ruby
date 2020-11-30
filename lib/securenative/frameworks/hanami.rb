@@ -4,6 +4,7 @@ module SecureNative
   module Frameworks
     class Hanami
       SECURENATIVE_COOKIE = '_sn'
+      PII_HEADERS = %w[authorization access_token apikey password passwd secret api_key]
 
       def self.get_client_token(request)
         begin
@@ -33,18 +34,51 @@ module SecureNative
         end
       end
 
-      def self.get_headers(request)
+      def self.get_headers(request, options)
         begin
           headers = {}
-
-          request.env.select { |k, _| k.in?(ActionDispatch::Http::Headers::CGI_VARIABLES) || k =~ /^HTTP_/ }.each { |header|
-            headers[header[0].downcase.gsub("http_", "").gsub("_", "-")] = header[1]
-          }
-
-          if headers.length == 0
-            request.headers.env.select { |k, _| k.in?(ActionDispatch::Http::Headers::CGI_VARIABLES) || k =~ /^HTTP_/ }.each { |header|
-              headers[header[0].downcase.gsub("http_", "").gsub("_", "-")] = header[1]
+          if !options.pii_headers.nil?
+            request.env.select { |k, _| k.in?(ActionDispatch::Http::Headers::CGI_VARIABLES) || k =~ /^HTTP_/ }.each { |header|
+              if !header.downcase.in?(options.pii_headers) && !header.upcase.in?(options.pii_headers)
+                headers[header[0].downcase.gsub("http_", "").gsub("_", "-")] = header[1]
+              end
             }
+
+            if headers.length == 0
+              request.headers.env.select { |k, _| k.in?(ActionDispatch::Http::Headers::CGI_VARIABLES) || k =~ /^HTTP_/ }.each { |header|
+                if !header.downcase.in?(options.pii_headers) && !header.upcase.in?(options.pii_headers)
+                  headers[header[0].downcase.gsub("http_", "").gsub("_", "-")] = header[1]
+                end
+              }
+            end
+          elsif options.pii_regex_pattern.nil?
+            request.env.select { |k, _| k.in?(ActionDispatch::Http::Headers::CGI_VARIABLES) || k =~ /^HTTP_/ }.each { |header|
+              unless options.pii_regex_pattern.match(header)
+                headers[header[0].downcase.gsub("http_", "").gsub("_", "-")] = header[1]
+              end
+            }
+
+            if headers.length == 0
+              request.headers.env.select { |k, _| k.in?(ActionDispatch::Http::Headers::CGI_VARIABLES) || k =~ /^HTTP_/ }.each { |header|
+                unless options.pii_regex_pattern.match(header)
+                  headers[header[0].downcase.gsub("http_", "").gsub("_", "-")] = header[1]
+                end
+              }
+            end
+          else
+            request.env.select { |k, _| k.in?(ActionDispatch::Http::Headers::CGI_VARIABLES) || k =~ /^HTTP_/ }.each { |header|
+              if !header.downcase.in?(PII_HEADERS) && !header.upcase.in?(PII_HEADERS)
+                headers[header[0].downcase.gsub("http_", "").gsub("_", "-")] = header[1]
+              end
+            }
+
+            if headers.length == 0
+              request.headers.env.select { |k, _| k.in?(ActionDispatch::Http::Headers::CGI_VARIABLES) || k =~ /^HTTP_/ }.each { |header|
+                if !header.downcase.in?(PII_HEADERS) && !header.upcase.in?(PII_HEADERS)
+                  headers[header[0].downcase.gsub("http_", "").gsub("_", "-")] = header[1]
+                end
+              }
+            end
           end
           return headers
         rescue StandardError
