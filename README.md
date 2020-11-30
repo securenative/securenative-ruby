@@ -186,4 +186,27 @@ require 'securenative'
 options = SecureNative::Options.new(api_key: 'API_KEY', max_events: 10, log_level: 'ERROR', proxy_headers: ['CF-Connecting-IP'])
 
 SecureNative::Client.init_with_options(options)
-``` 
+```
+
+## Remove PII Data From Headers
+
+By default, SecureNative SDK remove any known pii headers from the received request.
+We also support using custom pii headers and regex matching via configuration, for example:
+
+### Option 1: Using config file
+```yaml
+"SECURENATIVE_API_KEY": YOUR_API_KEY
+"SECURENATIVE_PII_HEADERS": ["apiKey"]
+```
+
+Initialize sdk as shown above.
+
+### Options 2: Using ConfigurationBuilder
+
+```ruby
+require 'securenative'
+
+options = SecureNative::Options.new(api_key: 'API_KEY', pii_regex_pattern: '((?i)(http_auth_)(\w+)?)')
+
+SecureNative::Client.init_with_options(options)
+```
